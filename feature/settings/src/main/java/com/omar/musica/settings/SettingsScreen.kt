@@ -1,7 +1,12 @@
 package com.omar.musica.settings
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.provider.DocumentsContract
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -27,6 +32,7 @@ import androidx.compose.material.icons.rounded.BlurCircular
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.FastForward
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
@@ -45,6 +51,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,12 +72,19 @@ import com.omar.musica.settings.common.ColorPickerDialog
 import com.omar.musica.settings.common.GeneralSettingsItem
 import com.omar.musica.settings.common.SettingInfo
 import com.omar.musica.settings.common.SwitchSettingsItem
+import com.omar.musica.settings.encriptation.SevenZipHelper
+import com.omar.musica.settings.utils.copyUriToFile
 import com.omar.musica.ui.common.fromIntToAccentColor
 import com.omar.musica.ui.common.toInt
 import com.omar.musica.ui.model.AppThemeUi
 import com.omar.musica.ui.model.PlayerThemeUi
 import com.omar.musica.ui.model.UserPreferencesUi
 import getPath
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 
 
 @Composable
@@ -139,12 +153,147 @@ fun SettingsList(
         .fillMaxWidth()
         .padding(start = 32.dp, top = 16.dp)
 
+    val context = LocalContext.current
+    val selectedFileName = remember { mutableStateOf("No file selected") }
+    val isFileSelected = remember { mutableStateOf(false) }
+    val isFileLoading = remember { mutableStateOf(false) }
+    val progress = remember { mutableStateOf(0) }
+
+
+    val fileChooserLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri: Uri? = result.data?.data
+            if (uri != null) {
+                val file = copyUriToFile(context, uri)
+                if (file != null) {
+                    selectedFileName.value = file.name
+                    isFileSelected.value = true
+                } else {
+                    selectedFileName.value = "Failed to copy file"
+                    isFileSelected.value = false
+                }
+            }
+        }
+    }
+
+
+
+
     LazyColumn(
         modifier.nestedScroll(nestedScrollConnection)
     ) {
         item {
             Divider(Modifier.fillMaxWidth())
+            if (isFileLoading.value)
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                    //.align(Alignment.TopCenter)
+                )
         }
+
+        item {
+            SectionTitle(modifier = sectionTitleModifier, title = "Library")
+        }
+
+        item {
+            var blacklistDialogVisible by remember {
+                mutableStateOf(false)
+            }
+            ConfirmDialog(
+                isVisible = isFileSelected.value,
+                onConfirm = {
+                    isFileSelected.value = false
+                    isFileLoading.value = true
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            Log.i("SevenZipHelper", "Coroutine started")
+                            Log.i("SevenZipHelper", "File selected: ${selectedFileName.value}")
+
+                            // Check if the file exists
+                            val file = File(context.cacheDir, selectedFileName.value)
+                            if (file.exists()) {
+                                Log.i("SevenZipHelper", "File exists: ${file.absolutePath}")
+                                SevenZipHelper.extractAndSaveToAppStorage(file, context, "123456789")
+                                Log.i("SevenZipHelper", "Extraction finished")
+                            } else {
+                                Log.e("SevenZipHelper", "File not found: ${file.absolutePath}")
+                            }
+
+                        } catch (e: Exception) {
+                            Log.e("SevenZipHelper", "Error extracting archive", e)
+                        } finally {
+                            isFileLoading.value = false
+                        }
+                    }
+                },
+                onDismissRequest = { isFileSelected.value = false }
+            )
+
+            GeneralSettingsItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                            type = "*/*"
+                            addCategory(Intent.CATEGORY_OPENABLE)
+                        }
+                        fileChooserLauncher.launch(intent)
+                    }
+                    .padding(horizontal = 32.dp, vertical = 16.dp),
+                title = "Unlock Your Music",
+                subtitle = "Select a file to decrypt and bring your music to life."
+            )
+        }
+
+        item {
+            var blacklistDialogVisible by remember {
+                mutableStateOf(false)
+            }
+            BlacklistedFoldersDialog(
+                isVisible = blacklistDialogVisible,
+                folders = userPreferences.librarySettings.excludedFolders,
+                onFolderAdded = { settingsCallbacks.onFolderAdded(it) },
+                onFolderDeleted = settingsCallbacks::onFolderDeleted,
+                onDismissRequest = { blacklistDialogVisible = false }
+            )
+            GeneralSettingsItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { blacklistDialogVisible = true }
+                    .padding(horizontal = 32.dp, vertical = 16.dp),
+                title = "Blacklisted Folders",
+                subtitle = "Music in these folders will not appear in the app"
+            )
+        }
+
+        item {
+            SwitchSettingsItem(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Cache Album Art",
+                info = SettingInfo(
+                    title = "Album Art Cache",
+                    text = "If enabled, this will cache the album art of one song and reuse it for all songs which have the same album name.\n\n" +
+                            "This will greatly improve efficiency and loading times. However, this might cause problems if two songs in the same album " +
+                            "don't have the same artwork.\n\n" +
+                            "If disabled, this will load the album art of each song separately, which will result in correct artwork, at the expense of loading times" +
+                            " and memory.",
+                    icon = Icons.Rounded.Info
+                ),
+                toggled = userPreferences.librarySettings.cacheAlbumCoverArt,
+                onToggle = { settingsCallbacks.onToggleCacheAlbumArt() }
+            )
+        }
+
+        item {
+            HorizontalDivider(
+                Modifier
+                    .fillMaxWidth()
+            )
+        }
+
         item {
             SectionTitle(modifier = sectionTitleModifier, title = "Interface")
         }
@@ -166,10 +315,11 @@ fun SettingsList(
                 AppThemeUi.LIGHT -> "Light"
                 AppThemeUi.DARK -> "Dark"
             }
-            GeneralSettingsItem(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { appThemeDialogVisible = true }
-                .padding(horizontal = 32.dp, vertical = 16.dp),
+            GeneralSettingsItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { appThemeDialogVisible = true }
+                    .padding(horizontal = 32.dp, vertical = 16.dp),
                 title = "App Theme",
                 subtitle = text
             )
@@ -208,10 +358,11 @@ fun SettingsList(
                     onDismissRequest = { accentColorDialogVisible = false }
                 )
             }
-            GeneralSettingsItem(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { accentColorDialogVisible = true }
-                .padding(horizontal = 32.dp, vertical = 16.dp),
+            GeneralSettingsItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { accentColorDialogVisible = true }
+                    .padding(horizontal = 32.dp, vertical = 16.dp),
                 title = "Accent Color",
                 subtitle = "Color of the app theme"
             )
@@ -241,10 +392,11 @@ fun SettingsList(
                 },
                 onDismissRequest = { playerThemeDialogVisible = false },
             )
-            GeneralSettingsItem(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { playerThemeDialogVisible = true }
-                .padding(horizontal = 32.dp, vertical = 16.dp),
+            GeneralSettingsItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { playerThemeDialogVisible = true }
+                    .padding(horizontal = 32.dp, vertical = 16.dp),
                 title = "Player Theme",
                 subtitle = when (userPreferences.uiSettings.playerThemeUi) {
                     PlayerThemeUi.SOLID -> "Solid"
@@ -260,53 +412,7 @@ fun SettingsList(
             )
         }
 
-        item {
-            SectionTitle(modifier = sectionTitleModifier, title = "Library")
-        }
 
-        item {
-            var blacklistDialogVisible by remember {
-                mutableStateOf(false)
-            }
-            BlacklistedFoldersDialog(
-                isVisible = blacklistDialogVisible,
-                folders = userPreferences.librarySettings.excludedFolders,
-                onFolderAdded = { settingsCallbacks.onFolderAdded(it) },
-                onFolderDeleted = settingsCallbacks::onFolderDeleted,
-                onDismissRequest = { blacklistDialogVisible = false }
-            )
-            GeneralSettingsItem(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { blacklistDialogVisible = true }
-                .padding(horizontal = 32.dp, vertical = 16.dp),
-                title = "Blacklisted Folders",
-                subtitle = "Music in these folders will not appear in the app"
-            )
-        }
-
-        item {
-            SwitchSettingsItem(modifier = Modifier.fillMaxWidth(),
-                title = "Cache Album Art",
-                info = SettingInfo(
-                    title = "Album Art Cache",
-                    text = "If enabled, this will cache the album art of one song and reuse it for all songs which have the same album name.\n\n" +
-                            "This will greatly improve efficiency and loading times. However, this might cause problems if two songs in the same album " +
-                            "don't have the same artwork.\n\n" +
-                            "If disabled, this will load the album art of each song separately, which will result in correct artwork, at the expense of loading times" +
-                            " and memory.",
-                    icon = Icons.Rounded.Info
-                ),
-                toggled = userPreferences.librarySettings.cacheAlbumCoverArt,
-                onToggle = { settingsCallbacks.onToggleCacheAlbumArt() }
-            )
-        }
-
-        item {
-            HorizontalDivider(
-                Modifier
-                    .fillMaxWidth()
-            )
-        }
 
         item {
             SectionTitle(modifier = sectionTitleModifier, title = "Player")
@@ -345,10 +451,11 @@ fun SettingsList(
                 },
                 { jumpDurationDialogVisible = false }
             )
-            GeneralSettingsItem(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { jumpDurationDialogVisible = true }
-                .padding(horizontal = 32.dp, vertical = 16.dp),
+            GeneralSettingsItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { jumpDurationDialogVisible = true }
+                    .padding(horizontal = 32.dp, vertical = 16.dp),
                 title = "Jump Interval",
                 subtitle = "${userPreferences.playerSettings.jumpInterval / 1000} seconds"
             )
@@ -455,13 +562,14 @@ fun BlacklistedFoldersDialog(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Divider(Modifier.fillMaxWidth())
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(
-                        RoundedCornerShape(4.dp)
-                    )
-                    .clickable { directoryPicker.launch(null) }
-                    .padding(8.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(
+                            RoundedCornerShape(4.dp)
+                        )
+                        .clickable { directoryPicker.launch(null) }
+                        .padding(8.dp)) {
                     Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(text = "Add Path")
@@ -470,6 +578,38 @@ fun BlacklistedFoldersDialog(
         }
     )
 
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ConfirmDialog(
+    isVisible: Boolean,
+    onConfirm: () -> Unit,
+    onDismissRequest: () -> Unit,
+) {
+    if (!isVisible) return
+
+    val context = LocalContext.current
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(text = "No")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = "Yes")
+            }
+        },
+        icon = { Icon(Icons.Rounded.LibraryMusic, contentDescription = null) },
+        title = { Text(text = "Unlock Your Music") },
+        text = {
+            Text(text = "Are you sure you want to add this file to your library?")
+        }
+    )
 }
 
 

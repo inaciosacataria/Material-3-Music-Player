@@ -4,9 +4,12 @@ import android.annotation.TargetApi
 import android.content.ContentUris
 import android.content.Context
 import android.database.ContentObserver
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import com.omar.musica.model.song.BasicSongMetadata
 import com.omar.musica.store.MediaRepository.PermissionListener
 import com.omar.musica.store.model.song.Song
@@ -77,7 +80,8 @@ class MediaRepository @Inject constructor(
                     } else {
                         mediaSyncJob = launch {
                             try {
-                                send(getAllSongs())
+                               // send(getAllSongs())
+                                send(getAllPrivateSongs())
                             } catch (e: Exception) {
                                 Timber.e(e.message)
                             } finally {
@@ -91,7 +95,8 @@ class MediaRepository @Inject constructor(
             permissionListener = PermissionListener {
 
                 mediaSyncJob = launch {
-                    send(getAllSongs())
+                  //  send(getAllSongs())
+                    send(getAllPrivateSongs())
                     mediaSyncJob = null
                 }
 
@@ -107,7 +112,8 @@ class MediaRepository @Inject constructor(
             mediaSyncJob = launch {
                 mediaSyncJob = launch {
                     try {
-                        send(getAllSongs())
+                     //   send(getAllSongs())
+                        send(getAllPrivateSongs())
                     } catch (e: Exception) {
                         Timber.e(e.message)
                     } finally {
@@ -140,6 +146,54 @@ class MediaRepository @Inject constructor(
     /**
      * Retrieves all the user's songs on the device along with their [BasicSongMetadata]
      */
+
+
+    suspend fun getAllPrivateSongs(): List<Song> = withContext(Dispatchers.IO) {
+        val privateDir = context.filesDir // Diretório privado do app
+        val results = mutableListOf<Song>()
+
+        privateDir.listFiles()
+            ?.filter { file -> file.extension == "mp3" || file.extension == "wav" }
+            ?.forEach { file ->
+                val fileUri = file.toUri()
+
+                // Extrair metadados do arquivo
+                val retriever = MediaMetadataRetriever()
+                try {
+                    retriever.setDataSource(file.absolutePath)
+                    val title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) ?: file.nameWithoutExtension
+                    val artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) ?: "<unknown>"
+                    val album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM) ?: "<unknown>"
+                    val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
+
+                    val basicMetadata = BasicSongMetadata(
+                        title = title,
+                        artistName = artist,
+                        albumName = album,
+                        durationMillis = duration,
+                        sizeBytes = file.length(),
+                        trackNumber = 0
+                    )
+
+                    Song(
+                        uri = fileUri,
+                        metadata = basicMetadata,
+                        filePath = file.absolutePath,
+                        albumId = 0L
+                    ).apply { Timber.d(this.toString()) }.also(results::add)
+
+                } catch (e: Exception) {
+                    Timber.e(e) // Ignora o arquivo se houver erro
+                } finally {
+                    retriever.release()
+                }
+            }
+
+        results
+    }
+
+
+
     suspend fun getAllSongs(): List<Song> = withContext(Dispatchers.IO) {
 
         val projection =

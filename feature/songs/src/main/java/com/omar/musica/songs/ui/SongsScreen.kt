@@ -1,7 +1,15 @@
 package com.omar.musica.songs.ui
 
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -21,10 +29,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +44,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberImagePainter
+import com.omar.musica.database.entities.ads.Ad
 import com.omar.musica.model.SongSortOption
 import com.omar.musica.songs.SongsScreenUiState
 import com.omar.musica.songs.viewmodel.SongsViewModel
@@ -43,6 +57,43 @@ import com.omar.musica.ui.menu.buildCommonSongActions
 import com.omar.musica.ui.songs.SongsSummary
 import com.omar.musica.ui.songs.selectableSongsList
 import com.omar.musica.ui.topbar.SelectionTopAppBarScaffold
+import kotlinx.coroutines.delay
+
+
+@Composable
+fun Banner(ads: List<Ad>) {
+    var currentAdIndex by remember { mutableStateOf(0) }
+    val context = LocalContext.current
+
+
+    LaunchedEffect(ads, currentAdIndex) {
+        if (ads.isNotEmpty()) {
+            delay(ads[currentAdIndex].time * 500)
+            currentAdIndex = (currentAdIndex + 1) % ads.size
+            Log.d("ads", "Current Ad Index: $currentAdIndex")
+        }
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                Log.d("Banner, ", "Banner Clicked")
+                val intent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse(ads.getOrNull(currentAdIndex)?.link))
+                context.startActivity(intent)
+            },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Log.d("ads", "ads: $ads")
+        Image(
+            painter = rememberImagePainter(data = ads.getOrNull(currentAdIndex)?.photo),
+            contentDescription = "Advertisement Banner",
+            modifier = Modifier.height(120.dp)
+        )
+    }
+}
 
 
 @Composable
@@ -51,14 +102,28 @@ fun SongsScreen(
     viewModel: SongsViewModel = hiltViewModel(),
     onSearchClicked: () -> Unit,
 ) {
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchAds()
+    }
+
+    val ads = viewModel.ads.value
+    Log.d("SongsScreen", "Ads: $ads")
+
+
     val songsUiState by viewModel.state.collectAsState()
-    SongsScreen(
-        modifier,
-        songsUiState,
-        viewModel::onSongClicked,
-        onSearchClicked,
-        viewModel::onSortOptionChanged
-    )
+
+    Column {
+
+        SongsScreen(
+            modifier,
+            songsUiState,
+            viewModel::onSongClicked,
+            onSearchClicked,
+            ads = ads,
+            viewModel::onSortOptionChanged
+        )
+    }
 }
 
 
@@ -69,6 +134,7 @@ internal fun SongsScreen(
     uiState: SongsScreenUiState,
     onSongClicked: (Song, Int) -> Unit,
     onSearchClicked: () -> Unit,
+    ads : List<Ad>,
     onSortOptionChanged: (SongSortOption, isAscending: Boolean) -> Unit
 ) {
 
@@ -109,28 +175,37 @@ internal fun SongsScreen(
                 numberOfVisibleIcons = 2,
                 scrollBehavior = scrollBehavior
             ) {
-                TopAppBar(
-                    modifier = Modifier.fillMaxWidth(),
-                    title = { Text(text = "Songs", fontWeight = FontWeight.SemiBold) },
-                    actions = {
-                        IconButton(onSearchClicked) {
-                            Icon(Icons.Rounded.Search, contentDescription = null)
-                        }
-                    },
-                    scrollBehavior = scrollBehavior
-                )
+                Column {
+
+
+                    TopAppBar(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = { Text(text = "Songs", fontWeight = FontWeight.SemiBold) },
+                        actions = {
+                            IconButton(onSearchClicked) {
+                                Icon(Icons.Rounded.Search, contentDescription = null)
+                            }
+                        },
+                        scrollBehavior = scrollBehavior
+                    )
+
+
+                }
+
             }
         },
     ) { paddingValues ->
         val layoutDirection = LocalLayoutDirection.current
+        Column(Modifier
+            .padding(
+                top = paddingValues.calculateTopPadding(),
+                end = paddingValues.calculateEndPadding(layoutDirection),
+                start = paddingValues.calculateStartPadding(layoutDirection)
+            )
+            .nestedScroll(scrollBehavior.nestedScrollConnection)) {
+        Banner(ads = ads)
         LazyColumn(
-            modifier = Modifier
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    end = paddingValues.calculateEndPadding(layoutDirection),
-                    start = paddingValues.calculateStartPadding(layoutDirection)
-                )
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+
         ) {
 
             item {
@@ -185,6 +260,7 @@ internal fun SongsScreen(
                 Spacer(modifier = Modifier.navigationBarsPadding())
             }
         }
+            }
     }
 
 }

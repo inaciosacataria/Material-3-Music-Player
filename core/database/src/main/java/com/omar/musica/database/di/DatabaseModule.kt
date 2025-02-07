@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.omar.musica.database.MusicaDatabase
 import com.omar.musica.database.entities.DB_NAME
+import com.omar.musica.database.entities.ads.SmartAdsData
 import com.omar.musica.database.migrations.MIGRATION_3_4
 import dagger.Module
 import dagger.Provides
@@ -21,7 +22,11 @@ object DatabaseModule {
     fun provideRoomDatabase(
         @ApplicationContext context: Context
     ): MusicaDatabase =
-        Room.databaseBuilder(context, MusicaDatabase::class.java, name = DB_NAME)
+        Room.databaseBuilder(
+            context,
+            MusicaDatabase::class.java,
+            name = DB_NAME
+        )
             .addMigrations(MIGRATION_3_4)
             .fallbackToDestructiveMigration()
             .build()
@@ -55,5 +60,11 @@ object DatabaseModule {
     fun provideLyricsDao(
         appDatabase: MusicaDatabase
     ) = appDatabase.lyricsDao()
+
+    @Singleton
+    @Provides
+    fun provideAdsDao(
+        appDatabase: MusicaDatabase
+    ) = appDatabase.adsDao()
 
 }

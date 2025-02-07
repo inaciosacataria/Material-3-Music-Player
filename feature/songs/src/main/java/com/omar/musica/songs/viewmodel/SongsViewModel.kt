@@ -1,11 +1,14 @@
 package com.omar.musica.songs.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.omar.musica.database.entities.ads.Ad
 import com.omar.musica.model.SongSortOption
 import com.omar.musica.playback.PlaybackManager
 import com.omar.musica.songs.SongsScreenUiState
 import com.omar.musica.store.MediaRepository
+import com.omar.musica.store.ads.AdsRepository
 import com.omar.musica.store.model.song.Song
 import com.omar.musica.store.preferences.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SongsViewModel @Inject constructor(
+    private val adsRepository: AdsRepository,
     private val mediaRepository: MediaRepository,
     private val mediaPlaybackManager: PlaybackManager,
     private val userPreferencesRepository: UserPreferencesRepository
@@ -28,6 +32,8 @@ class SongsViewModel @Inject constructor(
 
     private val sortOptionFlow = userPreferencesRepository.librarySettingsFlow
         .map { it.songsSortOrder }.distinctUntilChanged()
+
+    var ads = mutableStateOf(listOf<Ad>())
 
     val state: StateFlow<SongsScreenUiState> =
         mediaRepository.songsFlow
@@ -46,6 +52,7 @@ class SongsViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = SongsScreenUiState.Success(listOf())
             )
+
 
 
     /**
@@ -99,4 +106,15 @@ class SongsViewModel @Inject constructor(
         }
 
 
+     fun fetchAds() {
+        viewModelScope.launch {
+            ads.value = adsRepository.fetchAds()
+        }
+    }
+
+
+
+
 }
+
+

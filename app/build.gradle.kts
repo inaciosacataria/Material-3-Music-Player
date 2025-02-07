@@ -34,7 +34,7 @@ android {
 
         debug {
             applicationIdSuffix = ".debug"
-            resValue("string", "app_name", "MP debug")
+            resValue("string", "app_name", "Libertas")
         }
     }
 

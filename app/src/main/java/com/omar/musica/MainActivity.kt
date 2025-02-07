@@ -120,7 +120,7 @@ class MainActivity : ComponentActivity() {
                             targetState = storagePermissionState.status is PermissionStatus.Granted,
                             label = ""
                         ) {
-                            if (it)
+                            if (!it)
                                 MusicaApp2(modifier = Modifier.fillMaxSize(), navController)
                             else
                                 AskPermissionScreen(
@@ -132,7 +132,6 @@ class MainActivity : ComponentActivity() {
                                     onOpenSettings = { openAppSettingsScreen() }
                                 )
                         }
-
                     }
                 }
             }
