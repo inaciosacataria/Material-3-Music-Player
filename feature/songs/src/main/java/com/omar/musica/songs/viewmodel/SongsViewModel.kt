@@ -1,5 +1,6 @@
 package com.omar.musica.songs.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,13 +11,19 @@ import com.omar.musica.songs.SongsScreenUiState
 import com.omar.musica.store.MediaRepository
 import com.omar.musica.store.ads.AdsRepository
 import com.omar.musica.store.model.song.Song
+import com.omar.musica.store.model.song.SongLibrary
 import com.omar.musica.store.preferences.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,24 +42,75 @@ class SongsViewModel @Inject constructor(
 
     var ads = mutableStateOf(listOf<Ad>())
 
-    val state: StateFlow<SongsScreenUiState> =
+//    var state: StateFlow<SongsScreenUiState> =
+//        mediaRepository.songsFlow
+//            .map { it.songs }
+//            .combine(sortOptionFlow) { songList, sortOptionPair ->
+//
+//                val ascending = sortOptionPair.second
+//                val sortedList = if (ascending)
+//                    songList.sortedByOptionAscending(sortOptionPair.first)
+//                else
+//                    songList.sortedByOptionDescending(sortOptionPair.first)
+//                SongsScreenUiState.Success(sortedList, sortOptionPair.first, sortOptionPair.second)
+//            }
+//            .stateIn(
+//                viewModelScope,
+//                started = SharingStarted.WhileSubscribed(5000),
+//                initialValue = SongsScreenUiState.Success(listOf())
+//            )
+
+    // last change
+//    var state: StateFlow<SongsScreenUiState> =
+//        mediaRepository.songsFlow
+//            .map { it.songs }
+//            .combine(sortOptionFlow) { songList, sortOptionPair ->
+//
+//                val ascending = sortOptionPair.second
+//                val sortedList = if (ascending)
+//                    songList.sortedByOptionAscending(sortOptionPair.first)
+//                else
+//                    songList.sortedByOptionDescending(sortOptionPair.first)
+//
+//                SongsScreenUiState.Success(sortedList, sortOptionPair.first, sortOptionPair.second)
+//            }
+//            .stateIn(
+//                viewModelScope,
+//                started = SharingStarted.WhileSubscribed(5000),
+//                initialValue = SongsScreenUiState.Success(listOf())
+//            )
+
+
+    var state: StateFlow<SongsScreenUiState> =
         mediaRepository.songsFlow
-            .map { it.songs }
-            .combine(sortOptionFlow) { songList, sortOptionPair ->
-                // Sort the list according to the sort option
-                val ascending = sortOptionPair.second
-                val sortedList = if (ascending)
-                    songList.sortedByOptionAscending(sortOptionPair.first)
-                else
-                    songList.sortedByOptionDescending(sortOptionPair.first)
-                SongsScreenUiState.Success(sortedList, sortOptionPair.first, sortOptionPair.second)
+            .flatMapLatest { songLibrary: SongLibrary? ->
+                if (songLibrary == null || songLibrary.songs.isNullOrEmpty()) {
+                    flowOf(SongsScreenUiState.Success(emptyList(), SongSortOption.TITLE, true))
+                } else {
+                    flowOf(SongsScreenUiState.Success(songLibrary.songs, SongSortOption.TITLE, true))
+                }
             }
             .stateIn(
                 viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = SongsScreenUiState.Success(listOf())
+                initialValue = SongsScreenUiState.Success(emptyList(), SongSortOption.TITLE, true)
             )
 
+
+    /**
+     * Helper function to sort songs based on the given option and order.
+     */
+    private fun sortSongs(
+        songs: List<Song>,
+        sortOption: SongSortOption,
+        ascending: Boolean
+    ): List<Song> {
+        return if (ascending) {
+            songs.sortedByOptionAscending(sortOption)
+        } else {
+            songs.sortedByOptionDescending(sortOption)
+        }
+    }
 
 
     /**
@@ -76,12 +134,15 @@ class SongsViewModel @Inject constructor(
         }
     }
 
+
     /**
      * User wants to delete songs.
      * This is only intended for Android versions lower than R, since R and higher have different methods to delete songs.
      * Mainly, in Android R and above, we will have to send an intent to delete a media item and the system will ask the user for permission.
      * So they are implemented as part of the UI in Jetpack Compose
      */
+
+
     fun onDelete(songs: List<Song>) {
         mediaRepository.deleteSong(songs[0])
     }

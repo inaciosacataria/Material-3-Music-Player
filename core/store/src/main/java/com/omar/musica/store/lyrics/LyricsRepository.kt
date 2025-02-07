@@ -108,9 +108,11 @@ class LyricsRepository @Inject constructor(
                 ),
                 LyricsFetchSource.FROM_INTERNET
             )
-        } catch (e: NotFoundException) {
+        }
+        catch (e: NotFoundException) {
             LyricsResult.NotFound
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             LyricsResult.NetworkError
         }
     }

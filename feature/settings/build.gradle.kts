@@ -15,8 +15,10 @@ dependencies {
     implementation(project(mapOf("path" to ":core:store")))
     implementation(project(mapOf("path" to ":core:model")))
     implementation(project(mapOf("path" to ":core:ui")))
+    implementation(project(mapOf("path" to ":feature:songs")))
     implementation ("com.github.omicronapps:7-Zip-JBinding-4Android:Release-16.02-2.02")
     implementation ("net.lingala.zip4j:zip4j:2.9.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

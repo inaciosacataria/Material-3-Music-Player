@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -114,8 +115,7 @@ fun SongsScreen(
     val songsUiState by viewModel.state.collectAsState()
 
     Column {
-
-        SongsScreen(
+        SongsScreenList(
             modifier,
             songsUiState,
             viewModel::onSongClicked,
@@ -129,17 +129,17 @@ fun SongsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SongsScreen(
+internal fun SongsScreenList(
     modifier: Modifier,
     uiState: SongsScreenUiState,
     onSongClicked: (Song, Int) -> Unit,
     onSearchClicked: () -> Unit,
-    ads : List<Ad>,
+    ads: List<Ad>,
     onSortOptionChanged: (SongSortOption, isAscending: Boolean) -> Unit
 ) {
 
     val context = LocalContext.current
-    val songs = (uiState as SongsScreenUiState.Success).songs
+
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -196,73 +196,121 @@ internal fun SongsScreen(
         },
     ) { paddingValues ->
         val layoutDirection = LocalLayoutDirection.current
-        Column(Modifier
-            .padding(
-                top = paddingValues.calculateTopPadding(),
-                end = paddingValues.calculateEndPadding(layoutDirection),
-                start = paddingValues.calculateStartPadding(layoutDirection)
-            )
-            .nestedScroll(scrollBehavior.nestedScrollConnection)) {
-        Banner(ads = ads)
-        LazyColumn(
-
+        Column(
+            Modifier
+                .padding(
+                    top = paddingValues.calculateTopPadding(),
+                    end = paddingValues.calculateEndPadding(layoutDirection),
+                    start = paddingValues.calculateStartPadding(layoutDirection)
+                )
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
+            Banner(ads = ads)
 
-            item {
-                AnimatedVisibility(visible = !multiSelectEnabled) {
-                    SongsSummary(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, top = 16.dp),
-                        songs.count(),
-                        songs.sumOf { it.metadata.durationMillis }
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Divider(Modifier.fillMaxWidth())
-                }
-            }
+            LazyColumn(
 
-            item {
-                AnimatedVisibility(visible = !multiSelectEnabled) {
-                    SortChip(
-                        modifier = Modifier.padding(top = 8.dp, start = 12.dp, bottom = 4.dp),
-                        songSortOptions = SongSortOption.entries,
-                        onSortOptionSelected = onSortOptionChanged,
-                        currentSongSortOption = uiState.songSortOption,
-                        isAscending = uiState.isSortedAscendingly
-                    )
-                }
-            }
+            ) {
+                Log.d("SongsScreenList", "uiState: $uiState")
+                when (uiState) {
 
-            selectableSongsList(
-                songs,
-                multiSelectState,
-                multiSelectEnabled,
-                menuActionsBuilder = { song: Song ->
-                    with(commonSongActions) {
-                        buildCommonSongActions(
-                            song = song,
-                            context = context,
-                            songPlaybackActions = this.playbackActions,
-                            songInfoDialog = this.songInfoDialog,
-                            addToPlaylistDialog = this.addToPlaylistDialog,
-                            shareAction = this.shareAction,
-                            setAsRingtoneAction = this.setRingtoneAction,
-                            songDeleteAction = this.deleteAction,
-                            tagEditorAction = this.openTagEditorAction
-                        )
+                    is SongsScreenUiState.Success -> {
+                        Log.d("SongsScreenList", "when success uiState: $uiState")
+                        val songs = (uiState as SongsScreenUiState.Success).songs
+                        when {
+                            songs.size > 0 -> {
+                                item {
+                                    AnimatedVisibility(visible = !multiSelectEnabled) {
+                                        SongsSummary(
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(start = 16.dp, top = 16.dp),
+                                            songs.count(),
+                                            songs.sumOf { it.metadata.durationMillis }
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Divider(Modifier.fillMaxWidth())
+                                    }
+                                }
+
+//                                item {
+//                                    AnimatedVisibility(visible = !multiSelectEnabled) {
+//                                        SortChip(
+//                                            modifier = Modifier.padding(
+//                                                top = 8.dp,
+//                                                start = 12.dp,
+//                                                bottom = 4.dp
+//                                            ),
+//                                            songSortOptions = SongSortOption.entries,
+//                                            onSortOptionSelected = onSortOptionChanged,
+//                                            currentSongSortOption = uiState.songSortOption,
+//                                            isAscending = uiState.isSortedAscendingly
+//                                        )
+//                                    }
+//                                }
+
+                                selectableSongsList(
+                                    songs,
+                                    multiSelectState,
+                                    multiSelectEnabled,
+                                    menuActionsBuilder = { song: Song ->
+                                        with(commonSongActions) {
+                                            buildCommonSongActions(
+                                                song = song,
+                                                context = context,
+                                                songPlaybackActions = this.playbackActions,
+                                                songInfoDialog = this.songInfoDialog,
+                                                addToPlaylistDialog = this.addToPlaylistDialog,
+                                                shareAction = this.shareAction,
+                                                setAsRingtoneAction = this.setRingtoneAction,
+                                                songDeleteAction = this.deleteAction,
+                                                tagEditorAction = this.openTagEditorAction
+                                            )
+                                        }
+                                    },
+                                    onSongClicked = onSongClicked
+                                )
+
+                                item {
+                                    Spacer(modifier = Modifier.navigationBarsPadding())
+                                }
+                            }
+
+                            songs.size < 1 -> {
+                                item {
+                                    Column(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .height(200.dp),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text("list empty")
+                                    }
+
+                                }
+                            }
+
+                        }
                     }
-                },
-                onSongClicked = onSongClicked
-            )
 
-            item {
-                Spacer(modifier = Modifier.navigationBarsPadding())
+                    else -> {
+                        Log.d("SongsScreenList", "when else uiState: $uiState")
+                        item {
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text("list empty")
+                            }
+                        }
+                    }
+                }
             }
         }
-            }
     }
-
 }
 
 

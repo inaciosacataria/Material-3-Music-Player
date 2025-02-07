@@ -1,5 +1,6 @@
 package com.omar.nowplaying.lyrics
 
+import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -63,7 +64,7 @@ fun LiveLyricsScreen(
     modifier: Modifier,
     lyricsViewModel: LiveLyricsViewModel = hiltViewModel()
 ) {
-
+    Log.d("LiveLyricsScreen", "Recomposing")
     val state by lyricsViewModel.state.collectAsState()
     LiveLyricsScreen(
         modifier = modifier,

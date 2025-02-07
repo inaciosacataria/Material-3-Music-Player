@@ -25,64 +25,66 @@ val SevenTAG = "SevenZipHelper"
 
 object SevenZipHelper {
 
-    fun extractAndSaveToAppStorage(
+    suspend fun extractAndSaveToAppStorage(
         archiveFile: File,
         context: Context,
         password: String = "123456789"
     ) {
         try {
-            // Check if the file exists before proceeding
+            // Verifica se o arquivo existe antes de continuar
             if (!archiveFile.exists()) {
-                Log.e(SevenTAG, "Archive file does not exist: ${archiveFile.absolutePath}")
+                Log.e(SevenTAG, "Arquivo de archive não existe: ${archiveFile.absolutePath}")
                 return
             }
 
-            val randomAccessFile = RandomAccessFile(archiveFile, "r")
-            val inStream = RandomAccessFileInStream(randomAccessFile)
+            withContext(Dispatchers.IO) {  // Mover o processo para o dispatcher de IO
+                val randomAccessFile = RandomAccessFile(archiveFile, "r")
+                val inStream = RandomAccessFileInStream(randomAccessFile)
 
-            val callback = ArchiveOpenCallback(password)
-            val inArchive = SevenZip.openInArchive(ArchiveFormat.ZIP, inStream, callback)
+                val callback = ArchiveOpenCallback(password)
+                val inArchive = SevenZip.openInArchive(ArchiveFormat.ZIP, inStream, callback)
 
-            val itemCount = inArchive.numberOfItems
-            Log.i(SevenTAG, "Number of items: $itemCount")
+                val itemCount = inArchive.numberOfItems
+                Log.i(SevenTAG, "Número de itens: $itemCount")
 
-            // Get the app's internal storage directory
-            val appStorageDir = context.filesDir
+                // Pega o diretório de armazenamento interno do app
+                val appStorageDir = context.filesDir
 
-            for (i in 0 until itemCount) {
-                val filePath = inArchive.getStringProperty(i, PropID.PATH)
+                for (i in 0 until itemCount) {
+                    val filePath = inArchive.getStringProperty(i, PropID.PATH)
 
-                // Verifying if the file path is valid
-                if (filePath.isNullOrEmpty()) {
-                    Log.e(SevenTAG, "File path is empty or invalid for item: $i")
-                    continue
-                }
-
-                // Construct the output file path inside the app's private storage
-                val outputFile = File(appStorageDir, filePath)
-                val parentDir = outputFile.parentFile
-                if (parentDir?.exists() == false) {
-                    parentDir.mkdirs()  // Create directories if necessary
-                }
-
-                val outputStream = FileOutputStream(outputFile)
-                inArchive.extractSlow(i) { data ->
-                    if (data.isNotEmpty()) {
-                        Log.i(SevenTAG, "Writing data to file: ${data.size} bytes")
-                        outputStream.write(data)
-                    } else {
-                        Log.e(SevenTAG, "No data extracted for this file!")
+                    // Verificando se o caminho do arquivo é válido
+                    if (filePath.isNullOrEmpty()) {
+                        Log.e(SevenTAG, "Caminho do arquivo vazio ou inválido para o item: $i")
+                        continue
                     }
-                    data.size
-                }
-                outputStream.close()
-                Log.i(SevenTAG, "File extracted and saved to app storage: ${outputFile.absolutePath}")
-            }
 
-            inArchive.close()
-            inStream.close()
+                    // Construa o caminho do arquivo de saída dentro do armazenamento privado do app
+                    val outputFile = File(appStorageDir, filePath)
+                    val parentDir = outputFile.parentFile
+                    if (parentDir?.exists() == false) {
+                        parentDir.mkdirs()  // Cria diretórios se necessário
+                    }
+
+                    val outputStream = FileOutputStream(outputFile)
+                    inArchive.extractSlow(i) { data ->
+                        if (data.isNotEmpty()) {
+                            Log.i(SevenTAG, "Gravando dados no arquivo: ${data.size} bytes")
+                            outputStream.write(data)
+                        } else {
+                            Log.e(SevenTAG, "Nenhum dado extraído para este arquivo!")
+                        }
+                        data.size
+                    }
+                    outputStream.close()
+                    Log.i(SevenTAG, "Arquivo extraído e salvo no armazenamento do app: ${outputFile.absolutePath}")
+                }
+
+                inArchive.close()
+                inStream.close()
+            }
         } catch (e: Exception) {
-            Log.e(SevenTAG, "Error extracting archive", e)
+            Log.e(SevenTAG, "Erro ao extrair o archive", e)
         }
     }
 

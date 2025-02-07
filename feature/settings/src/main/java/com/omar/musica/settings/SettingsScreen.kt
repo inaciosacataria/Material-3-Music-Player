@@ -74,6 +74,7 @@ import com.omar.musica.settings.common.SettingInfo
 import com.omar.musica.settings.common.SwitchSettingsItem
 import com.omar.musica.settings.encriptation.SevenZipHelper
 import com.omar.musica.settings.utils.copyUriToFile
+import com.omar.musica.songs.viewmodel.SongsViewModel
 import com.omar.musica.ui.common.fromIntToAccentColor
 import com.omar.musica.ui.common.toInt
 import com.omar.musica.ui.model.AppThemeUi
@@ -90,13 +91,15 @@ import java.io.File
 @Composable
 fun SettingsScreen(
     modifier: Modifier,
-    settingsViewModel: SettingsViewModel = hiltViewModel()
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
+    songsViewModel: SongsViewModel = hiltViewModel()
 ) {
     val state by settingsViewModel.state.collectAsState()
     SettingsScreen(
         modifier = modifier,
         state = state,
-        settingsCallbacks = settingsViewModel
+        settingsCallbacks = settingsViewModel,
+        songsViewModel = songsViewModel
     )
 }
 
@@ -105,7 +108,8 @@ fun SettingsScreen(
 fun SettingsScreen(
     modifier: Modifier,
     state: SettingsState,
-    settingsCallbacks: ISettingsViewModel
+    settingsCallbacks: ISettingsViewModel,
+    songsViewModel: SongsViewModel= hiltViewModel()
 ) {
 
     val topBarScrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
@@ -133,6 +137,7 @@ fun SettingsScreen(
                     userPreferences = state.userPreferences,
                     settingsCallbacks = settingsCallbacks,
                     nestedScrollConnection = topBarScrollBehaviour.nestedScrollConnection,
+                    songsViewModel = songsViewModel
                 )
             }
 
@@ -147,7 +152,8 @@ fun SettingsList(
     modifier: Modifier,
     userPreferences: UserPreferencesUi,
     settingsCallbacks: ISettingsViewModel,
-    nestedScrollConnection: NestedScrollConnection
+    nestedScrollConnection: NestedScrollConnection,
+    songsViewModel : SongsViewModel
 ) {
     val sectionTitleModifier = Modifier
         .fillMaxWidth()
@@ -248,26 +254,26 @@ fun SettingsList(
             )
         }
 
-        item {
-            var blacklistDialogVisible by remember {
-                mutableStateOf(false)
-            }
-            BlacklistedFoldersDialog(
-                isVisible = blacklistDialogVisible,
-                folders = userPreferences.librarySettings.excludedFolders,
-                onFolderAdded = { settingsCallbacks.onFolderAdded(it) },
-                onFolderDeleted = settingsCallbacks::onFolderDeleted,
-                onDismissRequest = { blacklistDialogVisible = false }
-            )
-            GeneralSettingsItem(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { blacklistDialogVisible = true }
-                    .padding(horizontal = 32.dp, vertical = 16.dp),
-                title = "Blacklisted Folders",
-                subtitle = "Music in these folders will not appear in the app"
-            )
-        }
+//        item {
+//            var blacklistDialogVisible by remember {
+//                mutableStateOf(false)
+//            }
+//            BlacklistedFoldersDialog(
+//                isVisible = blacklistDialogVisible,
+//                folders = userPreferences.librarySettings.excludedFolders,
+//                onFolderAdded = { settingsCallbacks.onFolderAdded(it) },
+//                onFolderDeleted = settingsCallbacks::onFolderDeleted,
+//                onDismissRequest = { blacklistDialogVisible = false }
+//            )
+//            GeneralSettingsItem(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .clickable { blacklistDialogVisible = true }
+//                    .padding(horizontal = 32.dp, vertical = 16.dp),
+//                title = "Blacklisted Folders",
+//                subtitle = "Music in these folders will not appear in the app"
+//            )
+//        }
 
         item {
             SwitchSettingsItem(

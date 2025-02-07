@@ -49,7 +49,7 @@ fun NavGraphBuilder.settingsGraph(
                 popExitAnimationFactory(SETTINGS_ROUTE, this)
             }
         ) {
-            SettingsScreen(modifier = contentModifier.value)
+            SettingsScreen(modifier = contentModifier.value, )
         }
     }
 
