@@ -222,7 +222,7 @@ fun SettingsList(
                             val file = File(context.cacheDir, selectedFileName.value)
                             if (file.exists()) {
                                 Log.i("SevenZipHelper", "File exists: ${file.absolutePath}")
-                                SevenZipHelper.extractAndSaveToAppStorage(file, context, "123456789")
+                                SevenZipHelper.extractAndSaveToAppStorage(file, context)
                                 Log.i("SevenZipHelper", "Extraction finished")
                             } else {
                                 Log.e("SevenZipHelper", "File not found: ${file.absolutePath}")
