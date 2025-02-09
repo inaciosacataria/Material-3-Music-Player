@@ -24,7 +24,7 @@ enum class TopLevelDestination(
     SONGS(
         Icons.Rounded.MusicNote,
         Icons.Outlined.MusicNote,
-        "Songs",
+        "Músicas",
         SONGS_NAVIGATION_GRAPH
     ),
 
@@ -32,7 +32,7 @@ enum class TopLevelDestination(
     PLAYLISTS(
         Icons.Rounded.LibraryMusic,
         Icons.Outlined.LibraryMusic,
-        "Playlists",
+        "Listas de reprodução",
         PLAYLISTS_NAVIGATION_GRAPH
     ),
 
@@ -40,7 +40,7 @@ enum class TopLevelDestination(
     ALBUMS(
         Icons.Rounded.Album,
         Icons.Outlined.Album,
-        "Albums",
+        "Álbuns",
         ALBUMS_NAVIGATION_GRAPH
     ),
 
@@ -48,7 +48,7 @@ enum class TopLevelDestination(
     SETTINGS(
         Icons.Rounded.Settings,
         Icons.Outlined.Settings,
-        "Settings",
+        "Configurações",
         SETTINGS_NAVIGATION_GRAPH
     )
 

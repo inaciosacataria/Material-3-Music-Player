@@ -215,7 +215,7 @@ fun AlbumDetailsPortraitScreen(
                             top = 16.dp,
                             bottom = 8.dp
                         ),
-                        text = "More by ${albumInfo.artist}",
+                        text = "Mais de ${albumInfo.artist}",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Light
                     )
@@ -258,15 +258,15 @@ fun AlbumDetailsPortraitScreen(
                 onBackClicked = onBackClicked,
                 onPlayNext = {
                     actions.playNext()
-                    context.showShortToast("${albumInfo.name} will play next")
+                    context.showShortToast("${albumInfo.name} será tocada a seguir")
                 },
                 onAddToQueue = {
                     actions.addToQueue()
-                    context.showShortToast("${albumInfo.name} added to queue")
+                    context.showShortToast("${albumInfo.name} adicionada a fila")
                 },
                 onShuffleNext = {
                     actions.shuffleNext()
-                    context.showShortToast("${albumInfo.name} will play next")
+                    context.showShortToast("${albumInfo.name} será tocada a seguir")
                 },
                 onAddToPlaylists = {
                     addToPlaylistDialog.launch(albumSongs.map { it.song })

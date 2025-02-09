@@ -321,7 +321,7 @@ fun SongControls(
                 .size(34.dp)
                 .clip(RoundedCornerShape(4.dp)),
             icon = Icons.Rounded.SkipPrevious,
-            "Skip Previous",
+            "Pular anterior",
             onPrevious
         )
 
@@ -332,7 +332,7 @@ fun SongControls(
                 .size(34.dp)
                 .clip(RoundedCornerShape(4.dp)),
             icon = Icons.Rounded.FastRewind,
-            "Jump Back",
+            "Voltar",
             onJumpBackward
         )
 
@@ -347,7 +347,7 @@ fun SongControls(
                 .size(64.dp)
                 .clip(CircleShape),
             icon = pausePlayButton,
-            "Skip Previous",
+            "Pular anterior",
             onTogglePlayback
         )
 
@@ -358,7 +358,7 @@ fun SongControls(
                 .size(36.dp)
                 .clip(RoundedCornerShape(4.dp)),
             icon = Icons.Rounded.FastForward,
-            "Jump Forward",
+            "Salto para frente",
             onJumpForward
         )
 
@@ -369,7 +369,7 @@ fun SongControls(
                 .size(36.dp)
                 .clip(RoundedCornerShape(4.dp)),
             icon = Icons.Rounded.SkipNext,
-            "Skip To Next",
+            "A seguir",
             onNext
         )
 

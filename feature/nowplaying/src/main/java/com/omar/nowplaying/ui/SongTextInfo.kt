@@ -47,7 +47,7 @@ fun SongTextInfo(
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = song.metadata.artistName ?: "<unknown>",
+                text = song.metadata.artistName ?: "<desconhecido>",
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp,
@@ -59,7 +59,7 @@ fun SongTextInfo(
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = song.metadata.albumName ?: "<unknown>",
+                text = song.metadata.albumName ?: "<desconhecido>",
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,

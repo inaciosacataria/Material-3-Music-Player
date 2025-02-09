@@ -90,7 +90,7 @@ fun PlaylistsScreen(
         topBar = {
 
             TopAppBar(
-                title = { Text(text = "Playlists", fontWeight = FontWeight.SemiBold) },
+                title = { Text(text = "Listas de reprodução", fontWeight = FontWeight.SemiBold) },
                 actions = {
                     IconButton(onClick = { createPlaylistsDialog.launch() }) {
                         Icon(imageVector = Icons.Rounded.Add, contentDescription = null)

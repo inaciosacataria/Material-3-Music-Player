@@ -50,22 +50,22 @@ fun ShortcutDialogUi(
         },
         confirmButton = {
             TextButton(onClick = { onSubmit(shortcutName, shortcutAction) }) {
-                Text(text = "Create")
+                Text(text = "Criar")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = "Cancel")
+                Text(text = "Cancelar")
             }
         },
-        title = { Text(text = "Create shortcut for $listName", maxLines = 1, overflow = TextOverflow.Ellipsis) },
+        title = { Text(text = "Criar atalho para $listName", maxLines = 1, overflow = TextOverflow.Ellipsis) },
         text = {
             LazyColumn {
 
                 item {
                     Text(
                         modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
-                        text = "When I click the shortcut, do..."
+                        text = "Quando clico no atalho, faça ..."
                     )
                 }
 
@@ -98,7 +98,7 @@ fun ShortcutDialogUi(
                     TextField(
                         value = shortcutName,
                         onValueChange = { shortcutName = it },
-                        label = { Text(text = "Shortcut Name") },
+                        label = { Text(text = "Nome do atalho") },
                     )
                 }
             }
@@ -131,9 +131,9 @@ private fun ShortcutOption(
 
 internal fun actionTitleFromShortcutAction(listName: String, action: ShortcutAction): String =
     when (action) {
-        ShortcutAction.PLAY -> "Play $listName"
-        ShortcutAction.SHUFFLE -> "Shuffle $listName"
-        ShortcutAction.OPEN_IN_APP -> "Open in the app"
+        ShortcutAction.PLAY -> "Tocar $listName"
+        ShortcutAction.SHUFFLE -> "Embaralhar $listName"
+        ShortcutAction.OPEN_IN_APP -> "Abrir dentro do Applicativo"
     }
 
 @Preview

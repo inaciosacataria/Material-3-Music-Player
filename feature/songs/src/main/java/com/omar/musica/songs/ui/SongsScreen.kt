@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.omar.musica.database.entities.ads.Ad
+import com.omar.musica.database.entities.ads.Click
 import com.omar.musica.model.SongSortOption
 import com.omar.musica.songs.SongsScreenUiState
 import com.omar.musica.songs.viewmodel.SongsViewModel
@@ -62,7 +62,7 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun Banner(ads: List<Ad>) {
+fun Banner(ads: List<Ad>, submitClicks: (Click) -> Unit) {
     var currentAdIndex by remember { mutableStateOf(0) }
     val context = LocalContext.current
 
@@ -80,6 +80,13 @@ fun Banner(ads: List<Ad>) {
             .fillMaxWidth()
             .clickable {
                 Log.d("Banner, ", "Banner Clicked")
+                submitClicks(
+                    Click(
+                        adId = ads.getOrNull(currentAdIndex)?.id ?: 0,
+                        slug = ads.getOrNull(currentAdIndex)?.title ?: ""
+
+                    )
+                )
                 val intent =
                     Intent(Intent.ACTION_VIEW, Uri.parse(ads.getOrNull(currentAdIndex)?.link))
                 context.startActivity(intent)
@@ -121,7 +128,8 @@ fun SongsScreen(
             viewModel::onSongClicked,
             onSearchClicked,
             ads = ads,
-            viewModel::onSortOptionChanged
+            viewModel::onSortOptionChanged,
+            viewModel::submitCLicks
         )
     }
 }
@@ -135,7 +143,8 @@ internal fun SongsScreenList(
     onSongClicked: (Song, Int) -> Unit,
     onSearchClicked: () -> Unit,
     ads: List<Ad>,
-    onSortOptionChanged: (SongSortOption, isAscending: Boolean) -> Unit
+    onSortOptionChanged: (SongSortOption, isAscending: Boolean) -> Unit,
+    submitClicks: (Click) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -180,7 +189,7 @@ internal fun SongsScreenList(
 
                     TopAppBar(
                         modifier = Modifier.fillMaxWidth(),
-                        title = { Text(text = "Songs", fontWeight = FontWeight.SemiBold) },
+                        title = { Text(text = "Músicas", fontWeight = FontWeight.SemiBold) },
                         actions = {
                             IconButton(onSearchClicked) {
                                 Icon(Icons.Rounded.Search, contentDescription = null)
@@ -205,7 +214,9 @@ internal fun SongsScreenList(
                 )
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
-            Banner(ads = ads)
+
+            if (ads.isNotEmpty())
+            Banner(ads = ads, submitClicks)
 
             LazyColumn(
 

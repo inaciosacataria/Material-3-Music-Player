@@ -23,7 +23,7 @@ data class AdResponse(
 )
 
 
-data class Click(
+data class ClickModel(
     val id: Int = 0,
     val adId: Int,
     val slug: String,

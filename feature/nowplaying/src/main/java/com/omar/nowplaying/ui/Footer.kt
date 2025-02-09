@@ -50,9 +50,9 @@ fun PlayerFooter(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.QueueMusic,
-                contentDescription = "Queue"
+                contentDescription = "Fila"
             )
-            Text(text = "Queue")
+            Text(text = "Fila")
         }
 
 
@@ -62,7 +62,7 @@ fun PlayerFooter(
         // icons
         TooltipBox(
             tooltip = {
-                PlainTooltip { Text("Lyrics") }
+                PlainTooltip { Text("Letra") }
             },
             state = rememberTooltipState(),
             positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()
@@ -71,7 +71,7 @@ fun PlayerFooter(
                 Icon(
                     modifier = if (isLyricsOpen) Modifier else Modifier.alpha(0.5f),
                     imageVector = Icons.Rounded.Lyrics,
-                    contentDescription = "Lyrics"
+                    contentDescription = "Letra"
                 )
             }
         }
@@ -80,9 +80,9 @@ fun PlayerFooter(
                 PlainTooltip {
                     Text(
                         text = when (repeatMode) {
-                            RepeatMode.REPEAT_ALL -> "Repeat all"
-                            RepeatMode.REPEAT_SONG -> "Repeat this song"
-                            RepeatMode.NO_REPEAT -> "Don't Repeat"
+                            RepeatMode.REPEAT_ALL -> "Repita tudo"
+                            RepeatMode.REPEAT_SONG -> "Repita esta música"
+                            RepeatMode.NO_REPEAT -> "Não repita"
                         }
                     )
                 }
@@ -91,13 +91,13 @@ fun PlayerFooter(
             positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()
         ) {
             IconButton(onClick = onToggleRepeatMode) {
-                Icon(imageVector = repeatMode.getIconVector(), contentDescription = "Repeat Mode")
+                Icon(imageVector = repeatMode.getIconVector(), contentDescription = "Modo de repetição")
             }
         }
         TooltipBox(
             tooltip = {
                 PlainTooltip {
-                    Text(text = "Shuffle Mode")
+                    Text(text = "Modo aleatório")
                 }
             },
             state = rememberTooltipState(),
@@ -107,7 +107,7 @@ fun PlayerFooter(
                 Icon(
                     modifier = if (isShuffleOn) Modifier else Modifier.alpha(0.5f),
                     imageVector = Icons.Rounded.Shuffle,
-                    contentDescription = "Repeat Mode"
+                    contentDescription = "Modo de repetição"
                 )
             }
         }

@@ -18,11 +18,13 @@ import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.omar.musica.songs.ui.search.SearchScreen
 import com.omar.musica.songs.ui.SongsScreen
+import com.omar.musica.songs.ui.SplashScreenScreen
 import com.omar.musica.store.model.album.BasicAlbum
 
 
 const val SONGS_NAVIGATION_GRAPH = "songs_graph"
 const val SONGS_ROUTE = "songs_route"
+const val SPLASH_ROUTE = "splash_route"
 const val SEARCH_ROUTE = "search_route"
 
 

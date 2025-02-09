@@ -201,7 +201,7 @@ fun SettingsList(
         }
 
         item {
-            SectionTitle(modifier = sectionTitleModifier, title = "Library")
+            SectionTitle(modifier = sectionTitleModifier, title = "Biblioteca")
         }
 
         item {
@@ -249,8 +249,8 @@ fun SettingsList(
                         fileChooserLauncher.launch(intent)
                     }
                     .padding(horizontal = 32.dp, vertical = 16.dp),
-                title = "Unlock Your Music",
-                subtitle = "Select a file to decrypt and bring your music to life."
+                title = "Desbloqueie sua música",
+                subtitle = "Selecione um arquivo para descriptografar e dar vida à sua música."
             )
         }
 
@@ -278,14 +278,14 @@ fun SettingsList(
         item {
             SwitchSettingsItem(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Cache Album Art",
+                title = "Foto do álbum em cache",
                 info = SettingInfo(
-                    title = "Album Art Cache",
-                    text = "If enabled, this will cache the album art of one song and reuse it for all songs which have the same album name.\n\n" +
-                            "This will greatly improve efficiency and loading times. However, this might cause problems if two songs in the same album " +
-                            "don't have the same artwork.\n\n" +
-                            "If disabled, this will load the album art of each song separately, which will result in correct artwork, at the expense of loading times" +
-                            " and memory.",
+                    title = "foto do álbum em cache",
+                    text = "Se ativado, isso irá armazenar em cache a foto do álbum de uma música e reutilizá-la para todas as músicas que tenham o mesmo nome de álbum.\\n\\n\" +\n" +
+                            "                            \"Isso melhorará muito a eficiência e o tempo de carregamento. No entanto, isso poderá causar problemas se houver duas músicas no mesmo álbum \" +\n" +
+                            "                            \"não tenho a mesma arte.\\n\\n\" +\n" +
+                            "                            \"Se desabilitado, isso carregará a foto do álbum de cada música separadamente, o que resultará em uma foto correta, em detrimento do tempo de carregamento\" +\n" +
+                            "                            \" e memória.",
                     icon = Icons.Rounded.Info
                 ),
                 toggled = userPreferences.librarySettings.cacheAlbumCoverArt,
@@ -317,16 +317,16 @@ fun SettingsList(
                 }
             )
             val text = when (userPreferences.uiSettings.theme) {
-                AppThemeUi.SYSTEM -> "Follow System Settings"
-                AppThemeUi.LIGHT -> "Light"
-                AppThemeUi.DARK -> "Dark"
+                AppThemeUi.SYSTEM -> "Configurações do sistema"
+                AppThemeUi.LIGHT -> "Claro"
+                AppThemeUi.DARK -> "Escuro"
             }
             GeneralSettingsItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { appThemeDialogVisible = true }
                     .padding(horizontal = 32.dp, vertical = 16.dp),
-                title = "App Theme",
+                title = "Tema do aplicativo",
                 subtitle = text
             )
         }
@@ -335,8 +335,8 @@ fun SettingsList(
             SwitchSettingsItem(
                 modifier = Modifier
                     .fillMaxWidth(),
-                title = "Use Black Background for Dark Theme",
-                subtitle = "Preserves battery on AMOLED screens",
+                title = "Use fundo preto para tema escuro",
+                subtitle = "Preserva a bateria em telas AMOLED",
                 toggled = userPreferences.uiSettings.blackBackgroundForDarkTheme,
                 onToggle = { settingsCallbacks.toggleBlackBackgroundForDarkTheme() }
             )
@@ -346,7 +346,7 @@ fun SettingsList(
                 SwitchSettingsItem(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    title = "Dynamic Color Scheme",
+                    title = "Esquema de cores dinâmico",
                     toggled = userPreferences.uiSettings.isUsingDynamicColor,
                     onToggle = { settingsCallbacks.toggleDynamicColorScheme() }
                 )
@@ -369,8 +369,8 @@ fun SettingsList(
                     .fillMaxWidth()
                     .clickable { accentColorDialogVisible = true }
                     .padding(horizontal = 32.dp, vertical = 16.dp),
-                title = "Accent Color",
-                subtitle = "Color of the app theme"
+                title = "Cor de destaque",
+                subtitle = "Cor do tema do aplicativo"
             )
         }
 
@@ -378,8 +378,8 @@ fun SettingsList(
             SwitchSettingsItem(
                 modifier = Modifier
                     .fillMaxWidth(),
-                title = "MiniPlayer Extra Controls",
-                subtitle = "Show next and previous buttons in MiniPlayer",
+                title = "Controles extras do Libertas Player",
+                subtitle = "Mostrar botões próximo e anterior no Libertas Player",
                 toggled = userPreferences.uiSettings.showMiniPlayerExtraControls,
                 onToggle = settingsCallbacks::toggleShowExtraControls,
             )
@@ -403,9 +403,9 @@ fun SettingsList(
                     .fillMaxWidth()
                     .clickable { playerThemeDialogVisible = true }
                     .padding(horizontal = 32.dp, vertical = 16.dp),
-                title = "Player Theme",
+                title = "Tema do Libertas Player",
                 subtitle = when (userPreferences.uiSettings.playerThemeUi) {
-                    PlayerThemeUi.SOLID -> "Solid"
+                    PlayerThemeUi.SOLID -> "Sólido"
                     PlayerThemeUi.BLUR -> "Blur"
                 }
             )
@@ -427,8 +427,8 @@ fun SettingsList(
         item {
             SwitchSettingsItem(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Pause on Volume Zero",
-                "Pause if the volume is set to zero",
+                title = "Pausa no Volume Zero",
+                "Pausa se o volume estiver definido como zero",
                 toggled = userPreferences.playerSettings.pauseOnVolumeZero,
                 onToggle = { settingsCallbacks.togglePauseVolumeZero() }
             )
@@ -437,8 +437,8 @@ fun SettingsList(
         item {
             SwitchSettingsItem(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Resume when gaining volume",
-                "Resume if the volume increases, if it was paused due to volume loss",
+                title = "Retomar ao aumenta o volume",
+                "Retome se o volume aumentar, se foi pausado devido à perda de volume",
                 toggled = userPreferences.playerSettings.resumeWhenVolumeIncreases,
                 onToggle = { settingsCallbacks.toggleResumeVolumeNotZero() }
             )
@@ -462,8 +462,8 @@ fun SettingsList(
                     .fillMaxWidth()
                     .clickable { jumpDurationDialogVisible = true }
                     .padding(horizontal = 32.dp, vertical = 16.dp),
-                title = "Jump Interval",
-                subtitle = "${userPreferences.playerSettings.jumpInterval / 1000} seconds"
+                title = "Intervalo de salto",
+                subtitle = "${userPreferences.playerSettings.jumpInterval / 1000} segundos"
             )
         }
 
@@ -490,15 +490,15 @@ fun JumpDurationDialog(
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        dismissButton = { TextButton(onClick = onDismissRequest) { Text(text = "Close") } },
+        dismissButton = { TextButton(onClick = onDismissRequest) { Text(text = "Fechar") } },
         confirmButton = {
             TextButton(onClick = {
                 val duration = durationString.toIntOrNull() ?: return@TextButton
                 onDurationChanged(duration * 1000)
-            }) { Text(text = "Confirm") }
+            }) { Text(text = "Confirmar") }
         },
         icon = { Icon(Icons.Rounded.FastForward, contentDescription = null) },
-        title = { Text(text = "Jump Interval") },
+        title = { Text(text = "Intervalo de salto") },
         text = {
             TextField(
                 value = durationString,
@@ -542,7 +542,7 @@ fun BlacklistedFoldersDialog(
         dismissButton = { TextButton(onClick = onDismissRequest) { Text(text = "Close") } },
         confirmButton = { },
         icon = { Icon(Icons.Rounded.Block, contentDescription = null) },
-        title = { Text(text = "Blacklisted Folders") },
+        title = { Text(text = "Pastas na lista negra") },
         text = {
             Column(verticalArrangement = Arrangement.SpaceBetween) {
                 LazyColumn(modifier = Modifier) {
@@ -557,7 +557,7 @@ fun BlacklistedFoldersDialog(
                             IconButton(onClick = { onFolderDeleted(it) }) {
                                 Icon(
                                     imageVector = Icons.Rounded.Delete,
-                                    contentDescription = "Remove Folder from Blacklist"
+                                    contentDescription = "Remover pasta da lista negra"
                                 )
                             }
                         }
@@ -578,7 +578,7 @@ fun BlacklistedFoldersDialog(
                         .padding(8.dp)) {
                     Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = "Add Path")
+                    Text(text = "Adicionar caminho")
                 }
             }
         }
@@ -602,18 +602,18 @@ fun ConfirmDialog(
         onDismissRequest = onDismissRequest,
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = "No")
+                Text(text = "Não")
             }
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text(text = "Yes")
+                Text(text = "Sim")
             }
         },
         icon = { Icon(Icons.Rounded.LibraryMusic, contentDescription = null) },
-        title = { Text(text = "Unlock Your Music") },
+        title = { Text(text = "Desbloqueie sua música") },
         text = {
-            Text(text = "Are you sure you want to add this file to your library?")
+            Text(text = "Tem certeza de que deseja adicionar este arquivo à sua biblioteca?")
         }
     )
 }
@@ -636,10 +636,10 @@ fun AppThemeDialog(
     }
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        dismissButton = { TextButton(onClick = onDismissRequest) { Text(text = "Cancel") } },
+        dismissButton = { TextButton(onClick = onDismissRequest) { Text(text = "Cancelar") } },
         confirmButton = { },
         icon = { Icon(Icons.Rounded.LightMode, contentDescription = null) },
-        title = { Text(text = "App Theme") },
+        title = { Text(text = "Tema do aplicativo") },
         text = {
             Column {
                 optionsStrings.forEachIndexed { index, option ->
@@ -672,7 +672,7 @@ fun PlayerThemeDialog(
     onThemeSelected: (PlayerThemeUi) -> Unit,
 ) {
     if (!visible) return
-    val optionsStrings = listOf("Solid", "Blur")
+    val optionsStrings = listOf("Sólido", "Blur")
     val options = listOf(PlayerThemeUi.SOLID, PlayerThemeUi.BLUR)
     val selectedOptionIndex by remember {
         mutableStateOf(
@@ -684,7 +684,7 @@ fun PlayerThemeDialog(
         dismissButton = { TextButton(onClick = onDismissRequest) { Text(text = "Cancel") } },
         confirmButton = { },
         icon = { Icon(Icons.Rounded.BlurCircular, contentDescription = null) },
-        title = { Text(text = "Player Theme") },
+        title = { Text(text = "Tema do Libertas player") },
         text = {
             Column {
                 optionsStrings.forEachIndexed { index, option ->
@@ -729,7 +729,7 @@ fun SectionTitle(
 @Composable
 fun SettingsTopAppBar(topAppBarScrollBehavior: TopAppBarScrollBehavior) {
     TopAppBar(
-        title = { Text(text = "Settings", fontWeight = FontWeight.SemiBold) },
+        title = { Text(text = "Configurações", fontWeight = FontWeight.SemiBold) },
         scrollBehavior = topAppBarScrollBehavior
     )
 }

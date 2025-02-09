@@ -19,7 +19,7 @@ class EqualizerOpener(private val activity: Activity): OpenEqualizerAction {
             if (isEqualizerAvailable())
                 openEqualizerScreen()
             else
-                showShortToast("Your device doesn't have an equalizer")
+                showShortToast("Seu dispositivo não tem equalizador")
         }
     }
 }

@@ -59,7 +59,7 @@ fun CoverArtPicker(
             scope.launch(Dispatchers.IO) {
                 context.contentResolver.openInputStream(it).use { iStream ->
                     if (iStream == null) {
-                        context.showShortToast("Failed to pick image")
+                        context.showShortToast("Falha ao escolher a imagem")
                     } else {
                         val bitmap = BitmapFactory.decodeStream(iStream)
                         onUserPickedBitmap(bitmap)

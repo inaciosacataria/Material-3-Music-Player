@@ -22,20 +22,20 @@ class SetRingtone(private val context: Context) : SetRingtoneAction {
                 RingtoneManager.setActualDefaultRingtoneUri(
                     context, RingtoneManager.TYPE_RINGTONE, uri
                 )
-                context.showShortToast("Ringtone set successfully")
+                context.showShortToast("Toque definido com sucesso")
             }
             else  {
                 if (Build.VERSION.SDK_INT >= 23) {
-                    context.showShortToast("Allow the app to edit system settings")
+                    context.showShortToast("Permitir que o aplicativo edite as configurações do sistema")
                     context.startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply {
                         data = Uri.parse("package:" + context.packageName)
                     })
                 } else {
-                    context.showShortToast("Your device doesn't allow setting ringtone")
+                    context.showShortToast("Seu dispositivo não permite definir toque")
                 }
             }
         } catch (e: Exception) {
-            context.showShortToast("Failed to set ringtone")
+            context.showShortToast("Falha ao definir o toque")
             Timber.e("Failed to set ringtone:  ${e.message}")
         }
     }

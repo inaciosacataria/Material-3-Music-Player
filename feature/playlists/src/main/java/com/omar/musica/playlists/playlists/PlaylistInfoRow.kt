@@ -55,7 +55,7 @@ fun PlaylistInfoRow(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = playlistInfo.numberOfSongs.toString() + " songs",
+                text = playlistInfo.numberOfSongs.toString() + " músicas",
                 fontWeight = FontWeight.Normal,
                 fontSize = 11.sp,
                 maxLines = 1,

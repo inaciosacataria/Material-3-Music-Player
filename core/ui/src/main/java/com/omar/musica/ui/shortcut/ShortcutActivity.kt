@@ -57,7 +57,7 @@ class ShortcutActivity : ComponentActivity() {
         else if (command == PLAY_COMMAND)
             playbackManager.setPlaylistAndPlayAtIndex(songs)
 
-        showShortToast("$albumName started playing")
+        showShortToast("$albumName começou a tocar")
     }
 
     private fun handlePlaylist(command: String, playlist: Int) {
@@ -77,8 +77,8 @@ class ShortcutActivity : ComponentActivity() {
         else if (command == PLAY_COMMAND)
             playbackManager.playPlaylist(playlist)
 
-        val name = playlistInfo?.playlistInfo?.name ?: "Playlist"
-        showShortToast("$name started playing")
+        val name = playlistInfo?.playlistInfo?.name ?: "Lista de reprodução"
+        showShortToast("$name começou a tocar")
     }
 
     companion object {

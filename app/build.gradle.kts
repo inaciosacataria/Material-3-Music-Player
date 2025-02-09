@@ -4,6 +4,7 @@ plugins {
     id("com.omar.android.application")
     id("com.omar.android.application.compose")
     id("com.omar.android.hilt")
+    alias(libs.plugins.org.jetbrains.kotlin.android)
 }
 
 android {
@@ -65,6 +66,9 @@ dependencies {
     implementation(project(mapOf("path" to ":feature:tageditor")))
     implementation(project(mapOf("path" to ":feature:widgets")))
     api(libs.accompanist.permissions)
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

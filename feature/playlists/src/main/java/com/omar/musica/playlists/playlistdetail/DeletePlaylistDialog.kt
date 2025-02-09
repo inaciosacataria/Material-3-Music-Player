@@ -29,16 +29,16 @@ private fun DeletePlaylistDialog(
     if (!visible) return
     AlertDialog(
         icon = { Icon(imageVector = Icons.Rounded.Delete, contentDescription = null) },
-        title = { Text(text = "Delete playlist $playlistName?") },
-        text = { Text(text = "This cannot be undone") },
+        title = { Text(text = "apagar a lista de reprodução $playlistName?") },
+        text = { Text(text = "A acção não pode ser reposta") },
         confirmButton = {
             TextButton(onClick = onDelete) {
-                Text(text = "Confirm")
+                Text(text = "Confirmar")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = "Cancel")
+                Text(text = "Cancelar")
             }
         },
         onDismissRequest = onDismissRequest

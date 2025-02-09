@@ -50,12 +50,12 @@ fun AlbumsTopBar(
 
     TopAppBar(
         title = {
-            Text(text = "Albums", fontWeight = FontWeight.SemiBold)
+            Text(text = "Álbuns", fontWeight = FontWeight.SemiBold)
         },
         scrollBehavior = scrollBehavior,
         actions = {
             IconButton(onClick = { gridSizeDropdownShown = !gridSizeDropdownShown }) {
-                Icon(imageVector = Icons.Rounded.GridView, contentDescription = "Grid Size")
+                Icon(imageVector = Icons.Rounded.GridView, contentDescription = "Tamanho da grade")
                 GridSizeDropDownMenu(
                     visible = gridSizeDropdownShown,
                     currentSize = gridSize,
@@ -122,13 +122,13 @@ fun SortOptionDropdownMenu(
 
     DropdownMenu(expanded = visible, onDismissRequest = onDismissRequest) {
         Text(
-            text = "Sort Albums",
+            text = "Ordenar álbuns",
             modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp, end = 16.dp),
             style = MaterialTheme.typography.titleMedium
         )
 
         DropdownMenuItem(
-            text = { Text(text = "Ascending") },
+            text = { Text(text = "Ascendente") },
             onClick = { onChangeAscending(!isAscending) },
             trailingIcon = {
                 Checkbox(
@@ -141,14 +141,14 @@ fun SortOptionDropdownMenu(
 
 
         DropdownMenuItem(
-            text = { Text("Name") },
+            text = { Text("Nome") },
             onClick = { onChangeSortCriteria(AlbumsSortOption.NAME) },
             trailingIcon = {
                 RadioButton(selected = sortOption == AlbumsSortOption.NAME, onClick = null)
             }
         )
         DropdownMenuItem(
-            text = { Text("Artist") },
+            text = { Text("Artista") },
             onClick = { onChangeSortCriteria(AlbumsSortOption.ARTIST) },
             trailingIcon = {
                 RadioButton(selected = sortOption == AlbumsSortOption.ARTIST, onClick = null)
@@ -156,7 +156,7 @@ fun SortOptionDropdownMenu(
         )
         Spacer(modifier = Modifier.width(16.dp))
         DropdownMenuItem(
-            text = { Text("Number of Songs") },
+            text = { Text("Número de músicas") },
             onClick = { onChangeSortCriteria(AlbumsSortOption.NUMBER_OF_SONGS) },
             trailingIcon = {
                 RadioButton(

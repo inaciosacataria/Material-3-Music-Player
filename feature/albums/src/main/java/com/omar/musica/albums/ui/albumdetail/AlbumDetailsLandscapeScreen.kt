@@ -187,7 +187,7 @@ private fun MainContent(
                     top = 16.dp,
                     bottom = 8.dp
                 ),
-                text = "Songs",
+                text = "Musicas",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Light
             )
@@ -224,7 +224,7 @@ private fun MainContent(
                     top = 16.dp,
                     bottom = 8.dp
                 ),
-                text = "More by ${albumInfo.artist}",
+                text = "Mais de ${albumInfo.artist}",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Light
             )

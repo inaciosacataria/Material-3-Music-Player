@@ -2,6 +2,9 @@ package com.omar.musica.database.entities.ads
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class SmartAdsResponse(
     val status: Int,
@@ -34,7 +37,8 @@ data class Click(
     val id: Int = 0,
     val adId: Int,
     val slug: String,
-    val clickTime: Long)
+    val clickTime: String = formatTimeToDateAndTime(System.currentTimeMillis()),
+    var isSyncend : Boolean = false)
 
 data class ClickUpdateResponse(
     val status: Int,
@@ -46,3 +50,10 @@ data class ClickUpdateResponse(
 data class Slug(
     val slug: String
 )
+
+
+fun formatTimeToDateAndTime(clickTimeMillis: Long): String {
+    val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+    val date = Date(clickTimeMillis)
+    return sdf.format(date)
+}

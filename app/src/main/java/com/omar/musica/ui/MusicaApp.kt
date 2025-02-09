@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.omar.musica.albums.navigation.albumsGraph
 import com.omar.musica.albums.navigation.navigateToAlbumDetail
@@ -40,7 +41,9 @@ import com.omar.musica.playback.PlaybackService
 import com.omar.musica.playlists.navigation.playlistsGraph
 import com.omar.musica.settings.navigation.settingsGraph
 import com.omar.musica.songs.navigation.SONGS_NAVIGATION_GRAPH
+import com.omar.musica.songs.navigation.SPLASH_ROUTE
 import com.omar.musica.songs.navigation.songsGraph
+import com.omar.musica.songs.ui.SplashScreenScreen
 import com.omar.musica.state.rememberMusicaAppState
 import com.omar.musica.tageditor.navigation.tagEditorGraph
 import com.omar.musica.ui.compact.CompactAppScaffold
@@ -97,6 +100,7 @@ fun MusicaApp2(
                 navController = appState.navHostController,
                 startDestination = SONGS_NAVIGATION_GRAPH
             ) {
+
                 songsGraph(
                     contentModifier = contentModifier,
                     navController,

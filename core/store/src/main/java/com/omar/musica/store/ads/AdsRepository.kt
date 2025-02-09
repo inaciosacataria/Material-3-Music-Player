@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import com.omar.musica.database.dao.AdsDao
 import com.omar.musica.database.entities.ads.Ad
+import com.omar.musica.database.entities.ads.Click
 import com.omar.musica.network.data.AdsSource
 import com.omar.musica.network.model.AdResponse
 import kotlinx.coroutines.Dispatchers
@@ -25,12 +26,13 @@ class AdsRepository @Inject constructor(
             try {
                 val adsResponse = adsSource.fetchSmartAds()
                 val ads = adsResponse.map { adResponse ->
-                    val localImagePath = downloadImage(adResponse.photo) // Baixa e retorna o caminho local
+                    val localImagePath =
+                        downloadImage(adResponse.photo) // Baixa e retorna o caminho local
                     adResponse.convertAdsResponseToAds(localImagePath)
                 }
 
                 adsDao.insertAds(ads)
-
+                syncClicksAds()
                 return@withContext ads
             } catch (e: Exception) {
                 Log.e("AdsRepository", "Error fetching ads", e)
@@ -47,6 +49,59 @@ class AdsRepository @Inject constructor(
         }
     }
 
+    suspend fun submitClicks(click: Click) {
+        withContext(Dispatchers.IO) {
+            try {
+                var clickId = adsDao.insertClick(click)
+                if (clickId > 0) {
+                    var response = adsSource.submitClicks(click.slug)
+                    if (response) {
+                        Log.d("AdsRepository", "Clicks submitted successfully")
+                        adsDao.deleteClicks(click.id)
+                        Log.d("AdsRepository", "deleted successfully")
+                    } else {
+                        Log.d("AdsRepository", "Failed to submit clicks")
+                    }
+                }
+            } catch (e: Exception) {
+                var clickId = adsDao.insertClick(click)
+                if (clickId > 0) {
+                    Log.e("AdsRepository", "submiting clicks offline")
+                }else{
+                    Log.e("AdsRepository", "error submiting clicks offline")
+                }
+                Log.e("AdsRepository", "erro submiting clicks offiline", e)
+            }
+        }
+    }
+
+    suspend fun syncClicksAds() {
+        withContext(Dispatchers.IO) {
+            try {
+                var clicks = adsDao.getClicks()
+                if (clicks.isNotEmpty()) {
+                    clicks.forEach { click ->
+                        var response = adsSource.submitClicks(click.slug)
+                        if (response) {
+                            Log.d("AdsRepository", "Clicks submitted successfully")
+                            adsDao.deleteClicks(click.id)
+                            Log.d("AdsRepository", "deleted successfully")
+                        } else {
+                            Log.d("AdsRepository", "Failed to submit clicks")
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("AdsRepository", "erro submiting clicks", e)
+            }
+        }
+    }
+
+
+    suspend fun deleteAds(id: Int) {
+        adsDao.deleteAds(id)
+    }
+
     fun downloadImage(imageUrl: String): String {
         val imageFileName = imageUrl.substringAfterLast("/")
         val localFilePath = context.cacheDir.resolve(imageFileName)
@@ -61,7 +116,6 @@ class AdsRepository @Inject constructor(
 
         return localFilePath.absolutePath
     }
-
 
 
     fun AdResponse.convertAdsResponseToAds(imageUrl: String): Ad {

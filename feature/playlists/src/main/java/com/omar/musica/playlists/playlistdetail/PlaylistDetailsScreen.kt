@@ -258,7 +258,7 @@ internal fun PlaylistDetailScreen(
 
             item {
                 Text(
-                    text = "Songs",
+                    text = "Músicas",
                     fontWeight = FontWeight.Medium,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(
@@ -290,7 +290,7 @@ internal fun PlaylistDetailScreen(
                         ).apply {
                             add(
                                 3,
-                                MenuActionItem(Icons.Rounded.Delete, "Remove from Playlist") {
+                                MenuActionItem(Icons.Rounded.Delete, "Remover da listas de reprodução") {
                                     playlistActions.removeSongs(listOf(song.uri.toString()))
                                 })
                         }
@@ -355,7 +355,7 @@ private fun PlaylistHeader(
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = "$numberOfSongs songs • ${songsDuration.millisToTime()}",
+                    text = "$numberOfSongs músicas • ${songsDuration.millisToTime()}",
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp
                 )
@@ -416,7 +416,8 @@ fun EmptyPlaylist(
             )
             Text(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                text = "Your playlist is empty!\nAdd songs from the main page.",
+                text = "Sua lista de reprodução está vazia!\n" +
+                        "Adicione músicas da página principal.",
                 fontWeight = FontWeight.Light, fontSize = 16.sp
             )
         }

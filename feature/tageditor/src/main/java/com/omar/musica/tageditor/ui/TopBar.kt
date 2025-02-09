@@ -19,12 +19,12 @@ fun TagEditorTopBar(
 ) {
 
     TopAppBar(
-        title = { Text(text = "Tag Editor") },
+        title = { Text(text = "Editor de tags") },
         navigationIcon = {
             IconButton(onClick = onClose) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Voltar"
                 )
             }
         },

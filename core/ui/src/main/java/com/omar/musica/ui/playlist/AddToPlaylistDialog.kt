@@ -80,12 +80,12 @@ fun AddToPlaylistDialog(
                 onDismissRequest()
             }, enabled = dialogEntries.entries.any { it.isSelected }
             ) {
-                Text("Confirm")
+                Text("Confirmar")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text("Cancel")
+                Text("Cancelar")
             }
         },
         text = {
@@ -128,7 +128,7 @@ fun AddToPlaylistDialog(
                         ) {
                             Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = "Create a new playlist")
+                            Text(text = "Crie uma nova lista de reprodução")
                         }
                     }
 
@@ -136,7 +136,7 @@ fun AddToPlaylistDialog(
 
             }
         },
-        title = { Text(text = "Add to Playlists") },
+        title = { Text(text = "Adicionar às listas de reprodução") },
         icon = { Icon(imageVector = Icons.Rounded.PlaylistAdd, contentDescription = null) }
     )
 

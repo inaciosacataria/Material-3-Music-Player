@@ -215,145 +215,7 @@ class MediaRepository @Inject constructor(
     }
 
 
-//    val songsFlow =
-//        callbackFlow {
-//
-//            Timber.d(TAG, "Initializing callback flow to get all songs")
-//
-//            var lastChangedUri: Uri? = null
-//            val observer = object : ContentObserver(null) {
-//                override fun onChange(selfChange: Boolean, uri: Uri?) {
-//                    if (uri == lastChangedUri) return
-//                    lastChangedUri = uri
-//
-//                    if (mediaSyncJob?.isActive == true) return
-//
-//                    mediaSyncJob = launch {
-//                        try {
-//                            send(getAllPrivateSongs())
-//                        } catch (e: Exception) {
-//                            Timber.e(e.message)
-//                        } finally {
-//                            mediaSyncJob = null
-//                        }
-//                    }
-//                }
-//            }
-//
-//            // 📌 Adicionando o FileObserver para monitorar o diretório privado
-//            val fileObserver = object : FileObserver(context.filesDir.absolutePath, CREATE or DELETE or MOVED_TO or MOVED_FROM) {
-//                @SuppressLint("TimberArgCount")
-//                override fun onEvent(event: Int, path: String?) {
-//                    if (path != null) {
-//                        Timber.d(TAG, "Private file changed: $path")
-//                        mediaSyncJob = launch {
-//                            try {
-//                                send(getAllPrivateSongs()) // Atualiza as músicas privadas
-//                            } catch (e: Exception) {
-//                                Timber.e(e.message)
-//                            } finally {
-//                                mediaSyncJob = null
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            fileObserver.startWatching() // Inicia a observação do diretório privado
-//
-//            permissionListener = PermissionListener {
-//                mediaSyncJob = launch {
-//                    send(getAllPrivateSongs())
-//                    mediaSyncJob = null
-//                }
-//            }
-//
-//            context.contentResolver.registerContentObserver(
-//                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-//                true,
-//                observer
-//            )
-//
-//            // 📌 Sincronização inicial
-//            mediaSyncJob = launch {
-//                try {
-//                    send(getAllPrivateSongs())
-//                } catch (e: Exception) {
-//                    Timber.e(e.message)
-//                } finally {
-//                    mediaSyncJob = null
-//                }
-//            }
-//
-//            // 📌 Para de observar mudanças quando o Flow for cancelado
-//            awaitClose {
-//                context.contentResolver.unregisterContentObserver(observer)
-//                fileObserver.stopWatching()
-//            }
-//        }.combine(
-//            userPreferencesRepository.librarySettingsFlow.map { it.excludedFolders }
-//        ) { songs: List<Song>, excludedFolders: List<String> ->
-//            val filteredSongs = songs.filter { song ->
-//                !excludedFolders.any { folder ->
-//                    song.filePath.startsWith(folder)
-//                }
-//            }
-//            SongLibrary(filteredSongs)
-//        }.flowOn(Dispatchers.IO).stateIn(
-//            scope = scope,
-//            started = SharingStarted.Eagerly,
-//            initialValue = SongLibrary(listOf())
-//        )
-//
-//
-//    /**
-//     * Retrieves all the user's songs on the device along with their [BasicSongMetadata]
-//     */
-//
-//
-//
-//    suspend fun getAllPrivateSongs(): List<Song> = withContext(Dispatchers.IO) {
-//        val privateDir = context.filesDir // Diretório privado do app
-//        val results = mutableListOf<Song>()
-//
-//        privateDir.listFiles()
-//            ?.filter { file -> file.extension == "mp3" || file.extension == "wav" }
-//            ?.forEach { file ->
-//                val fileUri = file.toUri()
-//
-//                // Extrair metadados do arquivo
-//                val retriever = MediaMetadataRetriever()
-//                try {
-//                    retriever.setDataSource(file.absolutePath)
-//                    val title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) ?: file.nameWithoutExtension
-//                    val artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) ?: "<unknown>"
-//                    val album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM) ?: "<unknown>"
-//                    val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
-//
-//                    val basicMetadata = BasicSongMetadata(
-//                        title = title,
-//                        artistName = artist,
-//                        albumName = album,
-//                        durationMillis = duration,
-//                        sizeBytes = file.length(),
-//                        trackNumber = 0
-//                    )
-//
-//                    Song(
-//                        uri = fileUri,
-//                        metadata = basicMetadata,
-//                        filePath = file.absolutePath,
-//                        albumId = 0L
-//                    ).apply { Timber.d(this.toString()) }.also(results::add)
-//
-//                } catch (e: Exception) {
-//                    Timber.e(e) // Ignora o arquivo se houver erro
-//                } finally {
-//                    retriever.release()
-//                }
-//            }
-//
-//        results
-//    }
+
 
 
 
@@ -445,29 +307,6 @@ class MediaRepository @Inject constructor(
         }
     }
 
-//    suspend fun getSongPath(uri: Uri): String = withContext(Dispatchers.IO) {
-//
-//        val projection =
-//            arrayOf(
-//                MediaStore.Audio.Media.DATA,
-//            )
-//        val selection = "${MediaStore.Audio.Media._ID} = ${uri.lastPathSegment!!}"
-//
-//        val cursor = context.contentResolver.query(
-//            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-//            projection,
-//            selection,
-//            null,
-//            null,
-//            null
-//        ) ?: throw Exception("Invalid cursor")
-//
-//        cursor.use {
-//            it.moveToFirst()
-//            val pathColumn = it.getColumnIndex(MediaStore.Audio.Media.DATA)
-//            return@withContext it.getString(pathColumn)
-//        }
-//    }
 
     // Método modificado para buscar apenas no diretório privado do aplicativo
     suspend fun getSongPath(uri: Uri): String = withContext(Dispatchers.IO) {
@@ -497,6 +336,7 @@ class MediaRepository @Inject constructor(
      * Interface implemented inside the callback flow of the [MediaRepository]
      * to force refresh of the song library when the user grants the permission
      */
+
     private fun interface PermissionListener {
         fun onPermissionGranted()
     }

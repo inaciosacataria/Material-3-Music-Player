@@ -47,7 +47,7 @@ fun AlbumPlaybackButtons(
         LargeAlbumButton(
             modifier = Modifier.weight(1f),
             icon = Icons.Rounded.Shuffle,
-            title = "Shuffle",
+            title = "Embaralhar",
             color = MaterialTheme.colorScheme.secondaryContainer,
             onClick = onShuffle
         )

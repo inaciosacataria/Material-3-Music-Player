@@ -49,11 +49,11 @@ fun NowPlayingOverflowMenu(
     val sleepTimerDialog = rememberSleepTimerDialog(
         onSetTimer = { minutes, finishLastSong ->
             sleepTimerViewModel.schedule(minutes, finishLastSong)
-            context.showShortToast("Sleep timer set")
+            context.showShortToast("Temporizador definido")
         },
         onDeleteTimer = {
             sleepTimerViewModel.deleteTimer()
-            context.showShortToast("Sleep timer deleted")
+            context.showShortToast("Temporizador excluído")
         }
     )
 

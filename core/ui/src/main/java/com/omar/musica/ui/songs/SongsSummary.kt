@@ -26,7 +26,7 @@ fun SongsSummary(
 
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
 
-        Text(text = "$numberOfSongs songs", fontSize = 12.sp, fontWeight = FontWeight.Normal)
+        Text(text = "$numberOfSongs músicas", fontSize = 12.sp, fontWeight = FontWeight.Normal)
 
         Spacer(modifier = Modifier.width(8.dp))
 

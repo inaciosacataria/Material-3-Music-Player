@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.omar.musica.database.entities.ads.Ad
+import com.omar.musica.database.entities.ads.Click
 import com.omar.musica.model.SongSortOption
 import com.omar.musica.playback.PlaybackManager
 import com.omar.musica.songs.SongsScreenUiState
@@ -172,6 +173,15 @@ class SongsViewModel @Inject constructor(
             ads.value = adsRepository.fetchAds()
         }
     }
+
+
+    fun submitCLicks(click: Click){
+        viewModelScope.launch {
+            adsRepository.submitClicks(click)
+        }
+    }
+
+
 
 
 

@@ -54,7 +54,7 @@ fun rememberSongDialog(): SongInfoDialog {
         AlertDialog(
             confirmButton = {
                 TextButton(onClick = { song = null }) {
-                    Text(text = "Return")
+                    Text(text = "Fechar")
                 }
             },
             icon = { Icon(imageVector = Icons.Rounded.Info, contentDescription = null) },
@@ -80,7 +80,7 @@ fun rememberSongDialog(): SongInfoDialog {
                             Spacer(modifier = Modifier.width(16.dp))
                             SongMetadataRow(
                                 modifier = rowModifier,
-                                title = "Title",
+                                title = "Título",
                                 value = safeSong.metadata.title
                             )
                         }
@@ -92,41 +92,41 @@ fun rememberSongDialog(): SongInfoDialog {
                         SongMetadataSpacer()
                         SongMetadataRow(
                             modifier = rowModifier,
-                            title = "File Name",
+                            title = "Nome do arquivo",
                             value = File(safeSong.filePath).name
                         )
+//                        SongMetadataSpacer()
+//                        SongMetadataRow(
+//                            modifier = rowModifier,
+//                            title = "File Location",
+//                            value = safeSong.filePath.replace(
+//                                internalStoragePath,
+//                                "Internal Storage",
+//                                true
+//                            )
+//                        )
                         SongMetadataSpacer()
                         SongMetadataRow(
                             modifier = rowModifier,
-                            title = "File Location",
-                            value = safeSong.filePath.replace(
-                                internalStoragePath,
-                                "Internal Storage",
-                                true
-                            )
+                            title = "Artista",
+                            value = safeSong.metadata.artistName ?: "<desconhecido>"
                         )
                         SongMetadataSpacer()
                         SongMetadataRow(
                             modifier = rowModifier,
-                            title = "Artist",
-                            value = safeSong.metadata.artistName ?: "<unknown>"
+                            title = "Álbum",
+                            value = safeSong.metadata.albumName ?: "<desconhecido>"
                         )
                         SongMetadataSpacer()
                         SongMetadataRow(
                             modifier = rowModifier,
-                            title = "Album",
-                            value = safeSong.metadata.albumName ?: "<unknown>"
-                        )
-                        SongMetadataSpacer()
-                        SongMetadataRow(
-                            modifier = rowModifier,
-                            title = "File Size",
+                            title = "Tamanho do arquivo",
                             value = safeSong.metadata.sizeBytes.bytesToSizeString()
                         )
                         SongMetadataSpacer()
                         SongMetadataRow(
                             modifier = rowModifier,
-                            title = "Duration",
+                            title = "Duração",
                             value = safeSong.metadata.durationMillis.millisToTime()
                         )
                     }

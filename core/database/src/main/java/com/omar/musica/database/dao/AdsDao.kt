@@ -25,7 +25,7 @@ interface AdsDao {
 
     //Clicks
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertClick(click: Click)
+    fun insertClick(click: Click) : Long
 
     @Query("SELECT * FROM clicks")
     fun getClicks(): List<Click>

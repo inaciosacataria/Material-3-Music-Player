@@ -68,7 +68,7 @@ fun AlbumRow(
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "${album.albumInfo.numberOfSongs} songs",
+                text = "${album.albumInfo.numberOfSongs} músicas",
                 style = MaterialTheme.typography.bodySmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

@@ -1,11 +1,13 @@
 package com.omar.musica
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
@@ -120,17 +122,18 @@ class MainActivity : ComponentActivity() {
                             targetState = storagePermissionState.status is PermissionStatus.Granted,
                             label = ""
                         ) {
-                            if (!it)
+                            if (it)
+                                Log.d("permission","permission: $it")
                                 MusicaApp2(modifier = Modifier.fillMaxSize(), navController)
-                            else
-                                AskPermissionScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(16.dp),
-                                    storagePermissionState.status.shouldShowRationale,
-                                    onRequestPermission = { storagePermissionState.launchPermissionRequest() },
-                                    onOpenSettings = { openAppSettingsScreen() }
-                                )
+//                            else
+//                                AskPermissionScreen(
+//                                    modifier = Modifier
+//                                        .fillMaxSize()
+//                                        .padding(16.dp),
+//                                    storagePermissionState.status.shouldShowRationale,
+//                                    onRequestPermission = { storagePermissionState.launchPermissionRequest() },
+//                                    onOpenSettings = { openAppSettingsScreen() }
+//                                )
                         }
                     }
                 }

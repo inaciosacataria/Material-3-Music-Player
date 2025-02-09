@@ -39,15 +39,15 @@ fun ColorPickerDialog(
     AlertDialog(
         confirmButton = {
             TextButton(onClick = { onColorChanged(color) }) {
-                Text(text = "Confirm")
+                Text(text = "Confirmar")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = "Cancel")
+                Text(text = "Cancelar")
             }
         },
-        title = { Text(text = "Accent Color")},
+        title = { Text(text = "Cor de destaque")},
         onDismissRequest = onDismissRequest,
         text = {
             Column(

@@ -35,58 +35,58 @@ data class MenuActionItem(
 
 
 fun MutableList<MenuActionItem>.delete(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.Delete, "Delete", callback))
+    add(MenuActionItem(Icons.Rounded.Delete, "Excluir", callback))
 
 fun MutableList<MenuActionItem>.playNext(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.SkipNext, "Play Next", callback))
+    add(MenuActionItem(Icons.Rounded.SkipNext, "Tocar a seguir", callback))
 
 fun MutableList<MenuActionItem>.play(callback: () -> Unit) =
     add(MenuActionItem(Icons.Rounded.PlayArrow, "Play", callback))
 
 fun MutableList<MenuActionItem>.shuffle(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.Shuffle, "Shuffle", callback))
+    add(MenuActionItem(Icons.Rounded.Shuffle, "Embaralhar", callback))
 
 fun MutableList<MenuActionItem>.shuffleNext(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.Shuffle, "Shuffle Next", callback))
+    add(MenuActionItem(Icons.Rounded.Shuffle, "Embaralhar a Seguir", callback))
 
 fun MutableList<MenuActionItem>.addToQueue(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.AddToPhotos, "Add to Playing Queue", callback))
+    add(MenuActionItem(Icons.Rounded.AddToPhotos, "Adicionar à fila de músicas", callback))
 
 fun MutableList<MenuActionItem>.edit(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.Edit, "Edit", callback))
+    add(MenuActionItem(Icons.Rounded.Edit, "Editar", callback))
 
 fun MutableList<MenuActionItem>.rename(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.TextFormat, "Rename", callback))
+    add(MenuActionItem(Icons.Rounded.TextFormat, "Renomear", callback))
 
 fun MutableList<MenuActionItem>.addToPlaylists(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.AddToPhotos, "Add to Playlists", callback))
+    add(MenuActionItem(Icons.Rounded.AddToPhotos, "Adicionar às listas de reprodução", callback))
 
 fun MutableList<MenuActionItem>.share(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.Share, "Share", callback))
+    add(MenuActionItem(Icons.Rounded.Share, "Partilhar", callback))
 
 fun MutableList<MenuActionItem>.songInfo(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.Info, "Song Info", callback))
+    add(MenuActionItem(Icons.Rounded.Info, "Informações da música", callback))
 
 fun MutableList<MenuActionItem>.removeFromPlaylist(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.PlaylistRemove, "Remove from Playlist", callback))
+    add(MenuActionItem(Icons.Rounded.PlaylistRemove, "Remover da lista de reprodução", callback))
 
 fun MutableList<MenuActionItem>.sleepTimer(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.Alarm, "Sleep Timer", callback))
+    add(MenuActionItem(Icons.Rounded.Alarm, "Temporizador", callback))
 
 fun MutableList<MenuActionItem>.equalizer(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.Equalizer, "Equalizer", callback))
+    add(MenuActionItem(Icons.Rounded.Equalizer, "Equalizador", callback))
 
 fun MutableList<MenuActionItem>.setAsRingtone(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.RingVolume, "Set as Ringtone", callback))
+    add(MenuActionItem(Icons.Rounded.RingVolume, "Definir como toque", callback))
 
 fun MutableList<MenuActionItem>.playbackSpeed(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.Speed, "Playback Speed", callback))
+    add(MenuActionItem(Icons.Rounded.Speed, "Velocidade de reprodução", callback))
 
 fun MutableList<MenuActionItem>.tagEditor(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.Edit, "Edit Tags", callback))
+    add(MenuActionItem(Icons.Rounded.Edit, "Editar tags", callback))
 
 fun MutableList<MenuActionItem>.addShortcutToHomeScreen(callback: () -> Unit) =
-    add(MenuActionItem(Icons.Rounded.AppShortcut, "Add Shortcut to Homescreen", callback))
+    add(MenuActionItem(Icons.Rounded.AppShortcut, "Adicionar atalho à tela inicial", callback))
 
 
 fun buildCommonSongActions(

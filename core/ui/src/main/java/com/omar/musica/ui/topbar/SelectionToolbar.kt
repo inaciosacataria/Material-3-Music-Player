@@ -85,7 +85,7 @@ fun SelectionToolbar(
 ) {
     TopAppBar(
         modifier = modifier,
-        title = { Text(text = "$numberOfSelected selected", fontWeight = FontWeight.SemiBold) },
+        title = { Text(text = "$numberOfSelected selecionados", fontWeight = FontWeight.SemiBold) },
         navigationIcon = {
             IconButton(onClick = onNavigationIconClicked) {
                 Icon(imageVector = Icons.Rounded.Close, contentDescription = null)

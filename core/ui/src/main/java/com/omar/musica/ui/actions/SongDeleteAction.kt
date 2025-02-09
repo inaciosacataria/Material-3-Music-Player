@@ -66,7 +66,7 @@ fun deleteRequestLauncher(): AndroidRAboveDeleter {
         contract = ActivityResultContracts.StartIntentSenderForResult(),
         onResult = {
             if (it.resultCode == Activity.RESULT_OK) {
-                Toast.makeText(context, "Song deleted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Música excluída", Toast.LENGTH_SHORT).show()
             }
         })
     return remember {

@@ -42,7 +42,7 @@ fun InputStringDialog(
         title = { Text(text = title) },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = "Cancel")
+                Text(text = "Cancelar")
             }
         },
         confirmButton = {
@@ -50,7 +50,7 @@ fun InputStringDialog(
                 onClick = { if (!isError) onConfirm(input) },
                 enabled = !isError
             ) {
-                Text(text = "Confirm")
+                Text(text = "Confirmar")
             }
         },
         text = {

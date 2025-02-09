@@ -24,8 +24,8 @@ fun CreatePlaylistDialog(
     val focusRequester = remember { FocusRequester() }
 
     InputStringDialog(
-        title = "New Playlist",
-        placeholder = "Playlist Name...",
+        title = "Nova lista de reprodução",
+        placeholder = "Nome da lista de reprodução...",
         icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
         isInputValid = { input -> input.isNotBlank() && input !in playlistNames },
         onConfirm = { name -> viewModel.onInsertPlaylist(name); onDismissRequest() },
