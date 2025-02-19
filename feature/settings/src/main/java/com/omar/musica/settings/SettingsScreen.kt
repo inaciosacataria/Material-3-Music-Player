@@ -254,26 +254,15 @@ fun SettingsList(
             )
         }
 
-//        item {
-//            var blacklistDialogVisible by remember {
-//                mutableStateOf(false)
-//            }
-//            BlacklistedFoldersDialog(
-//                isVisible = blacklistDialogVisible,
-//                folders = userPreferences.librarySettings.excludedFolders,
-//                onFolderAdded = { settingsCallbacks.onFolderAdded(it) },
-//                onFolderDeleted = settingsCallbacks::onFolderDeleted,
-//                onDismissRequest = { blacklistDialogVisible = false }
-//            )
-//            GeneralSettingsItem(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .clickable { blacklistDialogVisible = true }
-//                    .padding(horizontal = 32.dp, vertical = 16.dp),
-//                title = "Blacklisted Folders",
-//                subtitle = "Music in these folders will not appear in the app"
-//            )
-//        }
+        item {
+            SwitchSettingsItem(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Gravar as musicas na memoria",
+                "Gravar as musicas na memoria sem precisar do flash",
+                toggled = userPreferences.playerSettings.pauseOnVolumeZero,
+                onToggle = { settingsCallbacks.togglePauseVolumeZero() }
+            )
+        }
 
         item {
             SwitchSettingsItem(
@@ -729,7 +718,7 @@ fun SectionTitle(
 @Composable
 fun SettingsTopAppBar(topAppBarScrollBehavior: TopAppBarScrollBehavior) {
     TopAppBar(
-        title = { Text(text = "Configurações", fontWeight = FontWeight.SemiBold) },
+        title = { Text(text = "Definições", fontWeight = FontWeight.SemiBold) },
         scrollBehavior = topAppBarScrollBehavior
     )
 }
